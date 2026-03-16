@@ -1,0 +1,46 @@
+backend:
+  name: git-gateway
+  branch: main
+
+locale: ru
+
+media_folder: "images"
+public_folder: "/images"
+
+collections:
+  - name: "settings"
+    label: "⚙️ Настройки сайта"
+    files:
+      - name: "current_book"
+        label: "📖 Текущая книга"
+        file: "_data/current_book.json"
+        fields:
+          - { label: "Название книги", name: "title", widget: "string" }
+          - { label: "Автор", name: "author", widget: "string" }
+          - { label: "Месяц встречи (например: Март 2026)", name: "meeting_date", widget: "string" }
+          - { label: "Формат встречи", name: "format", widget: "string", default: "Очно + онлайн" }
+
+  - name: "books"
+    label: "📚 Книги клуба"
+    folder: "_data/books"
+    create: true
+    slug: "{{year}}-{{month}}-{{title}}"
+    label_singular: "Книга"
+    fields:
+      - { label: "Название", name: "title", widget: "string" }
+      - { label: "Автор", name: "author", widget: "string" }
+      - { label: "Оценка клуба (от 1 до 10)", name: "rating", widget: "number", value_type: "float", min: 1, max: 10, required: false }
+      - { label: "Год прочтения", name: "year", widget: "number", value_type: "int" }
+      - { label: "Месяц (например: Янв 2026)", name: "date", widget: "string" }
+
+  - name: "meetings"
+    label: "📅 История встреч"
+    folder: "_data/meetings"
+    create: true
+    slug: "{{date}}-{{title}}"
+    label_singular: "Встреча"
+    fields:
+      - { label: "Название книги", name: "title", widget: "string" }
+      - { label: "Автор", name: "author", widget: "string" }
+      - { label: "Дата встречи (например: Январь 2026)", name: "date", widget: "string" }
+      - { label: "Оценка клуба", name: "rating", widget: "number", value_type: "float", min: 1, max: 10, required: false }
