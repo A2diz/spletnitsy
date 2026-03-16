@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Сплетницы — Книжный Клуб</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
 <style>
@@ -22,7 +22,9 @@
 
   html { scroll-behavior: smooth; }
 
+  html { overflow-x: hidden; }
   body {
+    overflow-x: hidden;
     background: #fff0f5;
     color: var(--ink);
     font-family: 'DM Sans', sans-serif;
@@ -65,8 +67,9 @@
 
   .nav-links {
     display: flex;
-    gap: 2.5rem;
+    gap: 1.8rem;
     list-style: none;
+    flex-wrap: nowrap;
   }
 
   .nav-links a {
@@ -634,21 +637,22 @@
   }
 
   .past-meeting-item {
-    padding: 1.5rem 0;
+    padding: 1.2rem 0;
     border-bottom: 1px solid rgba(26,16,24,0.07);
     display: grid;
-    grid-template-columns: 4rem 1fr auto;
-    gap: 1.2rem;
+    grid-template-columns: 5rem 1fr auto;
+    gap: 1rem;
     align-items: center;
   }
 
   .meeting-month {
     font-family: 'Playfair Display', serif;
-    font-size: 0.75rem;
+    font-size: 0.68rem;
     font-weight: 700;
     text-transform: uppercase;
     color: var(--rose);
-    text-align: center;
+    text-align: left;
+    line-height: 1.3;
     letter-spacing: 0.05em;
     line-height: 1.2;
   }
@@ -682,8 +686,11 @@
   .gallery-intro {
     display: flex;
     justify-content: space-between;
-    align-items: flex-end;
+    align-items: flex-start;
     margin-bottom: 3rem;
+  }
+  .gallery-intro > div:first-child {
+    text-align: left;
   }
 
   .gallery-grid {
@@ -735,14 +742,7 @@
 
   .gallery-item:hover .gallery-overlay { opacity: 1; }
 
-  @media (max-width: 768px) {
-    .gallery-overlay {
-      opacity: 1;
-      background: linear-gradient(to top, rgba(26,16,24,0.75) 0%, transparent 50%);
-      padding: 0.7rem;
-      font-size: 0.72rem;
-    }
-  }
+  
 
   .gallery-placeholder-text {
     color: rgba(255,255,255,0.4);
@@ -883,7 +883,7 @@
     background: var(--rose);
     color: white;
     border: none;
-    padding: 1.1rem;
+    padding: 1.1rem 2rem;
     font-family: 'DM Sans', sans-serif;
     font-size: 1rem;
     font-weight: 600;
@@ -902,74 +902,142 @@
 
   /* PRESENTATIONS */
   .presentations-section {
-    padding: 7rem 5rem;
+    padding: 4rem 5rem;
     background: #fff0f5;
   }
 
   .presentations-desc {
-    font-size: 1rem;
-    color: #5a4a52;
+    font-size: 0.95rem;
+    color: #7a6a72;
     line-height: 1.7;
-    max-width: 600px;
-    margin-bottom: 3rem;
+    max-width: 520px;
+    margin-bottom: 2.5rem;
   }
 
   .presentations-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
   }
 
   .presentation-card {
     background: white;
-    border: 1px solid rgba(232,64,122,0.15);
-    border-radius: 8px;
-    padding: 1.8rem;
-    transition: all 0.3s;
+    border: 1px solid rgba(232,64,122,0.12);
+    border-radius: 12px;
+    padding: 1.2rem 1.1rem 1rem;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
     text-decoration: none;
     color: var(--ink);
     display: flex;
     flex-direction: column;
-    gap: 0.8rem;
+    gap: 0.35rem;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, #ffffff 0%, #fff5f8 100%);
+    background-size: 200% 200%;
+  }
+
+  .presentation-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,111,168,0.06) 0%, rgba(232,64,122,0.1) 50%, rgba(255,240,245,0.08) 100%);
+    background-size: 300% 300%;
+    background-position: 0% 50%;
+    transition: background-position 0.6s ease, opacity 0.3s ease;
+    opacity: 0;
+    border-radius: 12px;
   }
 
   .presentation-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 16px 40px rgba(232,64,122,0.12);
-    border-color: rgba(232,64,122,0.3);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(232,64,122,0.13);
   }
 
+  .presentation-card:hover::before {
+    opacity: 1;
+    background-position: 100% 50%;
+  }
 
-  .pres-icon { font-size: 2rem; margin-bottom: 0.5rem; }
-  .pres-book { font-size: 0.72rem; color: var(--rose); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.3rem; }
-  .pres-title { font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 700; color: var(--ink); line-height: 1.3; margin-bottom: 0.4rem; }
-  .pres-desc { font-size: 0.8rem; color: #7a6a72; line-height: 1.5; flex: 1; }
-  .pres-meta { display: flex; justify-content: space-between; align-items: center; margin-top: 1rem; padding-top: 0.8rem; border-top: 1px solid rgba(232,64,122,0.1); }
-  .pres-date { font-size: 0.72rem; color: #9a8a92; }
-  .pres-dl { font-size: 0.75rem; color: var(--rose); font-weight: 600; }
-  .presentation-card-icon { font-size: 2rem; }
-  .presentation-card-book { font-family: 'Playfair Display', serif; font-size: 0.95rem; font-weight: 700; line-height: 1.3; }
-  .presentation-card-topic { font-size: 0.82rem; color: #7a6a72; line-height: 1.4; }
-  .presentation-card-author { font-size: 0.75rem; color: var(--rose); font-weight: 500; margin-top: auto; }
+  .pres-icon {
+    font-size: 1.3rem;
+    line-height: 1;
+    position: relative;
+    z-index: 1;
+  }
+
+  .pres-book {
+    font-size: 0.68rem;
+    color: var(--rose);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    line-height: 1.3;
+    position: relative;
+    z-index: 1;
+  }
+
+  .pres-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.3;
+    position: relative;
+    z-index: 1;
+  }
+
+  .pres-desc {
+    font-size: 0.75rem;
+    color: #9a8a92;
+    line-height: 1.45;
+    flex: 1;
+    position: relative;
+    z-index: 1;
+  }
+
+  .pres-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 0.7rem;
+    padding-top: 0.6rem;
+    border-top: 1px solid rgba(232,64,122,0.08);
+    position: relative;
+    z-index: 1;
+  }
+
+  .pres-date {
+    font-size: 0.68rem;
+    color: #b0a0a8;
+  }
+
+  .pres-dl {
+    font-size: 0.7rem;
+    color: var(--rose);
+    font-weight: 600;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+  }
+
+  .presentation-card:hover .pres-dl { opacity: 1; }
 
   .presentation-placeholder {
-    border: 2px dashed rgba(232,64,122,0.25);
-    border-radius: 8px;
-    padding: 3rem 2rem;
+    border: 2px dashed rgba(232,64,122,0.2);
+    border-radius: 12px;
+    padding: 2.5rem 2rem;
     text-align: center;
     color: #c0a0b0;
     grid-column: 1 / -1;
   }
 
-  .presentation-placeholder-icon { font-size: 2.5rem; margin-bottom: 1rem; }
-  .presentation-placeholder-text { font-size: 0.9rem; line-height: 1.6; }
+  
 
-  @media (max-width: 768px) {
-    .presentations-section { padding: 3.5rem 1.5rem; }
+  @media (max-width: 400px) {
     .presentations-grid { grid-template-columns: 1fr; }
   }
 
-  /* FOOTER */
+    /* FOOTER */
   footer {
     background: var(--ink);
     color: rgba(255,255,255,0.6);
@@ -1029,15 +1097,76 @@
   }
 
   /* MOBILE */
-  @media (max-width: 768px) {
+  rem;
+    color: white;
+    font-size: 2rem;
+    cursor: pointer;
+    line-height: 1;
+    opacity: 0.7;
+    transition: opacity 0.2s, transform 0.2s;
+    z-index: 10000;
+    background: none;
+    border: none;
+    font-family: sans-serif;
+  }
 
-    /* NAV */
+  .lightbox-close:hover { opacity: 1; transform: rotate(90deg); }
+
+  .lightbox-prev, .lightbox-next {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: white;
+    font-size: 1.5rem;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s;
+    z-index: 10000;
+  }
+
+  .lightbox-prev { left: 1.5rem; }
+  .lightbox-next { right: 1.5rem; }
+  .lightbox-prev:hover, .lightbox-next:hover { background: rgba(232,64,122,0.5); }
+
+  .lightbox-counter {
+    position: fixed;
+    bottom: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    color: rgba(255,255,255,0.5);
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+  }
+
+  .gallery-item { cursor: zoom-in; }
+
+
+  #lightbox { display: none; }
+  #lightbox.active { display: flex !important; }
+
+  @media (max-width: 768px) {
+  /* NAV - two rows on mobile */
     nav {
-      padding: 1rem 1.2rem;
+      padding: 0.7rem 1.2rem;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
     }
-    .nav-logo { font-size: 1.2rem; }
-    .nav-links { gap: 0.9rem; }
-    .nav-links a { font-size: 0.72rem; letter-spacing: 0.04em; }
+    .nav-logo { font-size: 1.15rem; }
+    .nav-links {
+      gap: 0.6rem;
+      flex-wrap: wrap;
+      width: 100%;
+    }
+    .nav-links a { font-size: 0.72rem; letter-spacing: 0.03em; white-space: nowrap; }
+    .hero-left { padding-top: 7rem; }
 
     /* HERO */
     .hero { grid-template-columns: 1fr; min-height: auto; }
@@ -1096,12 +1225,14 @@
     }
     .meeting-title { font-size: 1.3rem; }
     .past-meeting-item {
-      grid-template-columns: 3rem 1fr auto;
-      gap: 0.8rem;
-      padding: 1.1rem 0;
+      grid-template-columns: 4.5rem 1fr auto;
+      gap: 0.5rem;
+      padding: 0.9rem 0;
     }
-    .meeting-book-title { font-size: 0.85rem; }
-    .meeting-score { font-size: 1.1rem; }
+    .meeting-month { font-size: 0.6rem; line-height: 1.25; }
+    .meeting-book-title { font-size: 0.8rem; line-height: 1.3; }
+    .meeting-book-author { font-size: 0.7rem; }
+    .meeting-score { font-size: 1rem; }
 
     /* GALLERY */
     .gallery-intro { flex-direction: column; gap: 1rem; }
@@ -1182,10 +1313,7 @@
   .presentation-placeholder-icon { font-size: 2.5rem; margin-bottom: 1rem; }
   .presentation-placeholder-text { font-size: 0.9rem; line-height: 1.6; }
 
-  @media (max-width: 768px) {
-    .presentations-section { padding: 3.5rem 1.5rem; }
-    .presentations-grid { grid-template-columns: 1fr; }
-  }
+  
 
   /* FOOTER */
     footer {
@@ -1200,7 +1328,8 @@
   .history-nav {
     display: flex;
     align-items: center;
-    gap: 0.6rem;
+    justify-content: flex-start;
+    gap: 0.8rem;
     margin-top: 1.2rem;
   }
   .history-nav-btn {
@@ -1209,7 +1338,6 @@
     background: white;
     border-radius: 50%;
     cursor: pointer;
-    font-size: 1rem;
     display: flex; align-items: center; justify-content: center;
     transition: all 0.2s;
     color: var(--ink);
@@ -1219,95 +1347,34 @@
   .history-page-info { font-size: 0.78rem; color: #9a8a92; }
 
   /* BOOKS PAGINATION */
+  .books-content-wrap {
+    position: relative;
+    z-index: 2;
+  }
   .books-pagination {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.8rem;
+    gap: 1rem;
     margin-top: 2rem;
-    position: relative;
-    z-index: 2;
   }
   .books-page-btn {
-    width: 2.4rem; height: 2.4rem;
-    border: 1px solid rgba(255,255,255,0.2);
+    width: 2.2rem; height: 2.2rem;
+    border: 1px solid rgba(255,255,255,0.25);
     background: transparent;
     border-radius: 50%;
     cursor: pointer;
-    font-size: 1.2rem;
     display: flex; align-items: center; justify-content: center;
     transition: all 0.2s;
-    color: rgba(255,255,255,0.7);
+    color: rgba(255,255,255,0.75);
+    flex-shrink: 0;
   }
   .books-page-btn:hover { background: var(--rose); color: white; border-color: var(--rose); }
   .books-page-btn:disabled { opacity: 0.25; cursor: default; }
-  .books-page-info { font-size: 0.8rem; color: rgba(255,255,255,0.5); min-width: 5rem; text-align: center; }
+  .books-page-info { font-size: 0.8rem; color: rgba(255,255,255,0.5); min-width: 6rem; text-align: center; white-space: nowrap; }
 
   /* MOBILE GLOBAL FIXES */
-  @media (max-width: 768px) {
-    /* Nav - compact */
-    nav { padding: 0.8rem 1rem; flex-wrap: nowrap; }
-    .nav-logo { font-size: 1.1rem; white-space: nowrap; }
-    .nav-links { gap: 0.5rem; overflow-x: auto; }
-    .nav-links a { font-size: 0.62rem; letter-spacing: 0.02em; white-space: nowrap; }
-
-    /* Hero */
-    .hero { grid-template-columns: 1fr; }
-    .hero-right { display: none; }
-    .hero-left { padding: 5rem 1.2rem 2.5rem; }
-    .hero-title { font-size: 3.2rem; }
-    .hero-subtitle { font-size: 0.9rem; }
-    .hero-stats { gap: 1.2rem; }
-    .stat-num { font-size: 1.6rem; }
-    .stat-label { font-size: 0.65rem; }
-
-    /* About */
-    .section { padding: 3rem 1.2rem; }
-    .about-grid { grid-template-columns: 1fr; gap: 2rem; }
-    .about-features { grid-template-columns: 1fr 1fr; gap: 0.8rem; }
-    .feature-card { padding: 1rem; }
-    .feature-icon { font-size: 1.3rem; margin-bottom: 0.5rem; }
-    .feature-title { font-size: 0.85rem; }
-    .feature-desc { font-size: 0.75rem; }
-
-    /* Books */
-    .books-section { padding: 3rem 1.2rem; }
-    .books-grid { grid-template-columns: 1fr 1fr; gap: 0.8rem; min-height: unset; }
-    .book-item { padding: 0.9rem; }
-    .book-item-title { font-size: 0.82rem; }
-    .book-item-author { font-size: 0.68rem; }
-    .currently-reading { flex-direction: column; gap: 0.8rem; padding: 1.3rem; }
-    .current-title { font-size: 1.3rem; }
-    .books-filters { gap: 0.4rem; }
-    .filter-btn { padding: 0.3rem 0.7rem; font-size: 0.7rem; }
-    .section-title { font-size: 1.9rem; }
-
-    /* Schedule */
-    .schedule-section { padding: 3rem 1.2rem; }
-    .schedule-grid { grid-template-columns: 1fr; gap: 2rem; }
-    .next-meeting { position: static; padding: 1.4rem; }
-    .meeting-title { font-size: 1.2rem; }
-    .meeting-detail { font-size: 0.82rem; }
-    .meeting-detail-icon { width: 1.6rem; height: 1.6rem; font-size: 0.75rem; }
-
-    /* Gallery */
-    .gallery-section { padding: 3rem 1.2rem; }
-    .gallery-intro { flex-direction: column; gap: 0.8rem; }
-    .gallery-grid { grid-template-columns: 1fr 1fr !important; grid-template-rows: repeat(5, 130px) !important; gap: 0.5rem; }
-    .gallery-item:first-child { grid-row: span 1 !important; }
-
-    /* Presentations */
-    .presentations-section { padding: 3rem 1.2rem; }
-    .presentations-grid { grid-template-columns: 1fr; }
-
-    /* Join */
-    .join-section { padding: 3rem 1.2rem; grid-template-columns: 1fr; gap: 2rem; }
-    .join-form { padding: 1.5rem; }
-    .form-title { font-size: 1.3rem; }
-
-    /* Footer */
-    footer { flex-direction: column; gap: 0.8rem; text-align: center; padding: 2rem 1.2rem; }
-  }
+  
   @media (max-width: 400px) {
     .hero-title { font-size: 2.6rem; }
     .books-grid { grid-template-columns: 1fr; }
@@ -1319,224 +1386,21 @@
     .lightbox-prev { left: 0.5rem; }
     .lightbox-next { right: 0.5rem; }
     .lightbox-close { top: 1rem; right: 1rem; }
-  }
 
-  @media (max-width: 400px) {
-    .hero-title { font-size: 3rem; }
-    .nav-links { gap: 0.6rem; }
-    .nav-links a { font-size: 0.65rem; }
-    .books-grid { grid-template-columns: 1fr; }
-    .about-features { grid-template-columns: 1fr; }
-  }
+    /* GALLERY MOBILE CAPTIONS */
+    .gallery-overlay {
+      opacity: 1;
+      background: linear-gradient(to top, rgba(26,16,24,0.75) 0%, transparent 50%);
+      padding: 0.7rem;
+      font-size: 0.72rem;
+    }
 
-
-  /* HISTORY PAGINATION */
-  .history-nav {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    margin-top: 1.2rem;
-  }
-  .history-nav-btn {
-    width: 2rem; height: 2rem;
-    border: 1px solid rgba(26,16,24,0.15);
-    background: white;
-    border-radius: 50%;
-    cursor: pointer;
-    font-size: 1rem;
-    display: flex; align-items: center; justify-content: center;
-    transition: all 0.2s;
-    color: var(--ink);
-  }
-  .history-nav-btn:hover { background: var(--rose); color: white; border-color: var(--rose); }
-  .history-nav-btn:disabled { opacity: 0.3; cursor: default; }
-  .history-page-info { font-size: 0.78rem; color: #9a8a92; }
-
-  /* BOOKS PAGINATION */
-  .books-pagination {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.8rem;
-    margin-top: 2rem;
-    position: relative;
-    z-index: 2;
-  }
-  .books-page-btn {
-    width: 2.4rem; height: 2.4rem;
-    border: 1px solid rgba(255,255,255,0.2);
-    background: transparent;
-    border-radius: 50%;
-    cursor: pointer;
-    font-size: 1.2rem;
-    display: flex; align-items: center; justify-content: center;
-    transition: all 0.2s;
-    color: rgba(255,255,255,0.7);
-  }
-  .books-page-btn:hover { background: var(--rose); color: white; border-color: var(--rose); }
-  .books-page-btn:disabled { opacity: 0.25; cursor: default; }
-  .books-page-info { font-size: 0.8rem; color: rgba(255,255,255,0.5); min-width: 5rem; text-align: center; }
-
-  /* MOBILE GLOBAL FIXES */
-  @media (max-width: 768px) {
-    /* Nav - compact */
-    nav { padding: 0.8rem 1rem; flex-wrap: nowrap; }
-    .nav-logo { font-size: 1.1rem; white-space: nowrap; }
-    .nav-links { gap: 0.5rem; overflow-x: auto; }
-    .nav-links a { font-size: 0.62rem; letter-spacing: 0.02em; white-space: nowrap; }
-
-    /* Hero */
-    .hero { grid-template-columns: 1fr; }
-    .hero-right { display: none; }
-    .hero-left { padding: 5rem 1.2rem 2.5rem; }
-    .hero-title { font-size: 3.2rem; }
-    .hero-subtitle { font-size: 0.9rem; }
-    .hero-stats { gap: 1.2rem; }
-    .stat-num { font-size: 1.6rem; }
-    .stat-label { font-size: 0.65rem; }
-
-    /* About */
-    .section { padding: 3rem 1.2rem; }
-    .about-grid { grid-template-columns: 1fr; gap: 2rem; }
-    .about-features { grid-template-columns: 1fr 1fr; gap: 0.8rem; }
-    .feature-card { padding: 1rem; }
-    .feature-icon { font-size: 1.3rem; margin-bottom: 0.5rem; }
-    .feature-title { font-size: 0.85rem; }
-    .feature-desc { font-size: 0.75rem; }
-
-    /* Books */
-    .books-section { padding: 3rem 1.2rem; }
-    .books-grid { grid-template-columns: 1fr 1fr; gap: 0.8rem; min-height: unset; }
-    .book-item { padding: 0.9rem; }
-    .book-item-title { font-size: 0.82rem; }
-    .book-item-author { font-size: 0.68rem; }
-    .currently-reading { flex-direction: column; gap: 0.8rem; padding: 1.3rem; }
-    .current-title { font-size: 1.3rem; }
-    .books-filters { gap: 0.4rem; }
-    .filter-btn { padding: 0.3rem 0.7rem; font-size: 0.7rem; }
-    .section-title { font-size: 1.9rem; }
-
-    /* Schedule */
-    .schedule-section { padding: 3rem 1.2rem; }
-    .schedule-grid { grid-template-columns: 1fr; gap: 2rem; }
-    .next-meeting { position: static; padding: 1.4rem; }
-    .meeting-title { font-size: 1.2rem; }
-    .meeting-detail { font-size: 0.82rem; }
-    .meeting-detail-icon { width: 1.6rem; height: 1.6rem; font-size: 0.75rem; }
-
-    /* Gallery */
-    .gallery-section { padding: 3rem 1.2rem; }
-    .gallery-intro { flex-direction: column; gap: 0.8rem; }
-    .gallery-grid { grid-template-columns: 1fr 1fr !important; grid-template-rows: repeat(5, 130px) !important; gap: 0.5rem; }
-    .gallery-item:first-child { grid-row: span 1 !important; }
-
-    /* Presentations */
+    /* PRESENTATIONS */
     .presentations-section { padding: 3rem 1.2rem; }
-    .presentations-grid { grid-template-columns: 1fr; }
-
-    /* Join */
-    .join-section { padding: 3rem 1.2rem; grid-template-columns: 1fr; gap: 2rem; }
-    .join-form { padding: 1.5rem; }
-    .form-title { font-size: 1.3rem; }
-
-    /* Footer */
-    footer { flex-direction: column; gap: 0.8rem; text-align: center; padding: 2rem 1.2rem; }
+    .presentations-grid { grid-template-columns: 1fr 1fr; gap: 0.7rem; }
+    .pres-title { font-size: 0.82rem; }
+    .pres-desc { font-size: 0.7rem; }
   }
-  @media (max-width: 400px) {
-    .hero-title { font-size: 2.6rem; }
-    .books-grid { grid-template-columns: 1fr; }
-    .about-features { grid-template-columns: 1fr; }
-    .nav-links a { font-size: 0.58rem; }
-  }
-
-  /* LIGHTBOX */
-  .lightbox-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(26,10,20,0.95);
-    z-index: 9999;
-    align-items: center;
-    justify-content: center;
-    cursor: zoom-out;
-    animation: fadeInLB 0.25s ease;
-  }
-
-  .lightbox-overlay.active { display: flex; }
-
-  @keyframes fadeInLB {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
-
-  .lightbox-img {
-    max-width: 90vw;
-    max-height: 88vh;
-    object-fit: contain;
-    border-radius: 4px;
-    box-shadow: 0 40px 80px rgba(0,0,0,0.6);
-    animation: zoomInLB 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-    cursor: default;
-  }
-
-  @keyframes zoomInLB {
-    from { transform: scale(0.85); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
-  }
-
-  .lightbox-close {
-    position: fixed;
-    top: 1.5rem;
-    right: 2rem;
-    color: white;
-    font-size: 2rem;
-    cursor: pointer;
-    line-height: 1;
-    opacity: 0.7;
-    transition: opacity 0.2s, transform 0.2s;
-    z-index: 10000;
-    background: none;
-    border: none;
-    font-family: sans-serif;
-  }
-
-  .lightbox-close:hover { opacity: 1; transform: rotate(90deg); }
-
-  .lightbox-prev, .lightbox-next {
-    position: fixed;
-    top: 50%;
-    transform: translateY(-50%);
-    background: rgba(255,255,255,0.12);
-    border: 1px solid rgba(255,255,255,0.2);
-    color: white;
-    font-size: 1.5rem;
-    width: 3rem;
-    height: 3rem;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: background 0.2s;
-    z-index: 10000;
-  }
-
-  .lightbox-prev { left: 1.5rem; }
-  .lightbox-next { right: 1.5rem; }
-  .lightbox-prev:hover, .lightbox-next:hover { background: rgba(232,64,122,0.5); }
-
-  .lightbox-counter {
-    position: fixed;
-    bottom: 1.5rem;
-    left: 50%;
-    transform: translateX(-50%);
-    color: rgba(255,255,255,0.5);
-    font-size: 0.8rem;
-    letter-spacing: 0.1em;
-  }
-
-  .gallery-item { cursor: zoom-in; }
-
 </style>
 </head>
 <body>
@@ -1547,9 +1411,9 @@
   <ul class="nav-links">
     <li><a href="#about">О клубе</a></li>
     <li><a href="#books">Книги</a></li>
+    <li><a href="#presentations">Презентации</a></li>
     <li><a href="#schedule">Встречи</a></li>
     <li><a href="#gallery">Галерея</a></li>
-    <li><a href="#presentations">Презентации</a></li>
     <li><a href="#join">Вступить</a></li>
   </ul>
 </nav>
@@ -1566,7 +1430,7 @@
     </div>
     <div class="hero-stats">
       <div>
-        <div class="stat-num">30</div>
+        <div class="stat-num" id="bookCountStat">31</div>
         <div class="stat-label">книг прочли</div>
       </div>
       <div>
@@ -1651,17 +1515,18 @@
 <section class="books-section" id="books">
   <div class="section-tag">Наши книги</div>
   <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:2.5rem; flex-wrap:wrap; gap:1rem;">
-    <h2 class="section-title" style="margin-bottom:0;">33 книги</h2>
+    <h2 class="section-title" style="margin-bottom:0;">32 книги</h2>
   </div>
 
   <div class="currently-reading reveal">
     <div>
       <div class="current-label">Читаем сейчас</div>
-      <div class="current-title">Камера обскура</div>
-      <div class="current-author">Владимир Набоков</div>
+      <div class="current-title">Внутри секты</div>
+      <div class="current-author">by Михаил Вершинин</div>
     </div>
   </div>
 
+  <div class="books-content-wrap">
   <div class="books-filters" id="booksFilters">
     <button class="filter-btn active" data-filter="all">Все</button>
     <button class="filter-btn" data-filter="high">★ Топ (8+)</button>
@@ -1673,8 +1538,8 @@
   </div>
 
   <div class="books-grid" id="booksGrid"></div>
-  <div class="books-pager" id="booksPager"></div>
   <div class="books-pagination" id="booksPagination"></div>
+  </div>
 </section>
 <!-- PRESENTATIONS -->
 <section class="presentations-section" id="presentations">
@@ -1684,7 +1549,7 @@
   <div class="presentations-grid" id="presentationsGrid">
     <a class="presentation-card" href="#" download="Соловеи_.pptx">
       <div class="pres-icon">🕊️</div>
-      <div class="pres-book">The Nightingale</div>
+      <div class="pres-book">The Nightingale — Kristin Hannah</div>
       <div class="pres-title">Соловей</div>
       <div class="pres-desc">Мнение о книге и важные мысли</div>
       <div class="pres-meta">
@@ -1694,7 +1559,7 @@
     </a>
     <a class="presentation-card" href="#" download="Тара_Вестовер_учится_жить_.pptx">
       <div class="pres-icon">📖</div>
-      <div class="pres-book">Educated</div>
+      <div class="pres-book">Ученица — Tara Westover</div>
       <div class="pres-title">Тара Вестовер учится жить</div>
       <div class="pres-desc">Психологические травмы героини</div>
       <div class="pres-meta">
@@ -1704,7 +1569,7 @@
     </a>
     <a class="presentation-card" href="#" download="_Сказки_.pptx">
       <div class="pres-icon">✨</div>
-      <div class="pres-book">A Court of Thorns and Roses</div>
+      <div class="pres-book">Бабушка велела кланяться — Фредерик Бакман</div>
       <div class="pres-title">Сказки моего городка</div>
       <div class="pres-desc">Личные истории участниц клуба</div>
       <div class="pres-meta">
@@ -1724,7 +1589,7 @@
     </a>
     <a class="presentation-card" href="#" download="Несчастныи__случаи__Ребекки.pptx">
       <div class="pres-icon">🔍</div>
-      <div class="pres-book">Четвёртое крыло</div>
+      <div class="pres-book">Долорес Клейборн — Стивен Кинг</div>
       <div class="pres-title">Несчастный случай Ребекки</div>
       <div class="pres-desc">Реальный детективный случай Ребекки Захау</div>
       <div class="pres-meta">
@@ -1754,12 +1619,12 @@
   <div class="schedule-grid">
     <div class="next-meeting reveal">
       <div class="meeting-badge">Читаем сейчас</div>
-      <div class="meeting-title">Камера обскура</div>
-      <div style="font-size:0.85rem; color:#7a6a72;">Владимир Набоков</div>
+      <div class="meeting-title">Внутри секты</div>
+      <div style="font-size:0.85rem; color:#7a6a72;">Михаил Вершинин</div>
       <div class="meeting-details">
         <div class="meeting-detail">
           <div class="meeting-detail-icon">📅</div>
-          <span>Следующая встреча — 1 марта</span>
+          <span>Следующая встреча — 4 апреля</span>
         </div>
         <div class="meeting-detail">
           <div class="meeting-detail-icon">📍</div>
@@ -1791,8 +1656,8 @@
     <div>
       <div class="section-tag">Фото</div>
       <h2 class="section-title">Наши <em style="color:var(--rose)">встречи</em><br>в кадре</h2>
+      <p style="font-size:0.85rem; color:#7a6a72; margin-top:0.8rem; line-height:1.5;">Моменты, которые мы сохраняем ✨</p>
     </div>
-    <p style="font-size:0.85rem; color:#7a6a72; max-width:200px; text-align:right; line-height:1.5;">Моменты, которые мы сохраняем ✨</p>
   </div>
 
   <div class="gallery-grid reveal" style="grid-template-columns: 2fr 1fr 1fr; grid-template-rows: repeat(4, 220px);">
@@ -1874,7 +1739,7 @@
         <label class="form-label">Формат участия *</label>
         <select id="f-format" class="form-select">
           <option value="">Выбери вариант</option>
-          <option>Приду лично (Омск)</option>
+          <option>Приду лично</option>
           <option>Буду онлайн</option>
           <option>Оба варианта</option>
         </select>
@@ -1909,9 +1774,9 @@
 
 <script>
 const books = [
-  // 2026
+  { title: "Внутри секты", author: "Михаил Вершинин", rating: null, year: 2026, date: "Мар 2026" },
+  { title: "Камера обскура", author: "Владимир Набоков", rating: 9.0, year: 2026, date: "Мар 2026" },
   { title: "В канун Рождества", author: "Розамунда Пилчер", rating: 1.67, year: 2026, date: "Янв 2026" },
-  // 2025
   { title: "The Unquiet Bones", author: "Loreth Anne White", rating: 7.6, year: 2025, date: "Дек 2025" },
   { title: "Книга Чтец", author: "Бернхард Шлинк", rating: 7.71, year: 2025, date: "Ноя 2025" },
   { title: "Project Hail Mary", author: "Andy Weir", rating: 9.0, year: 2025, date: "Окт 2025" },
@@ -1922,7 +1787,6 @@ const books = [
   { title: "Норма", author: "Владимир Сорокин", rating: 4.0, year: 2025, date: "Мар 2025" },
   { title: "Yellowface", author: "R. F. Kuang", rating: 8.33, year: 2025, date: "Фев 2025" },
   { title: "Скорбь Сатаны", author: "Мария Корелли", rating: 3.0, year: 2025, date: "Янв 2025" },
-  // 2024
   { title: "Долорес Клейборн", author: "Стивен Кинг", rating: 7.83, year: 2024, date: "Ноя 2024" },
   { title: "Tomorrow, and Tomorrow, and Tomorrow", author: "Gabrielle Zevin", rating: 8.5, year: 2024, date: "Окт 2024" },
   { title: "Hidden Valley Road", author: "Robert Kolker", rating: 9.0, year: 2024, date: "Сен 2024" },
@@ -1935,7 +1799,6 @@ const books = [
   { title: "Четвёртое крыло", author: "Ребекка Яррос", rating: 9.5, year: 2024, date: "Май 2024" },
   { title: "Better Than the Movies", author: "Lynn Painter", rating: 8.0, year: 2024, date: "Фев 2024" },
   { title: "Доктор Живаго", author: "Борис Пастернак", rating: 5.67, year: 2024, date: "Янв 2024" },
-  // 2023
   { title: "Window Shopping", author: "Tessa Bailey", rating: 1.0, year: 2023, date: "Дек 2023" },
   { title: "Горничная", author: "Фрида Макфадден", rating: 8.33, year: 2023, date: "Ноя 2023" },
   { title: "Королевство шипов и роз", author: "Сара Маас", rating: 9.33, year: 2023, date: "Ноя 2023" },
@@ -1943,9 +1806,8 @@ const books = [
   { title: "Токийский зодиак", author: "Содзи Симада", rating: 3.67, year: 2023, date: "Сен 2023" },
   { title: "Beautiful World, Where Are You", author: "Sally Rooney", rating: 4.67, year: 2023, date: "Июл 2023" },
   { title: "Rock Paper Scissors", author: "Alice Feeney", rating: 6.33, year: 2023, date: "Июл 2023" },
-]
+];
 
-// ---- UTILITY ----
 function getRatingColor(r) {
   if (!r) return 'rgba(255,255,255,0.3)';
   if (r >= 8) return '#d4a843';
@@ -1981,6 +1843,8 @@ function renderBooks(filter) {
   const page = filtered.slice(start, start + BOOKS_PER_PAGE);
 
   const grid = document.getElementById('booksGrid');
+  const savedScroll = window.scrollY;
+  grid.style.minHeight = grid.offsetHeight + 'px';
   grid.innerHTML = page.map(b => `
     <div class="book-item">
       <div class="book-item-date">${b.date}</div>
@@ -1993,19 +1857,32 @@ function renderBooks(filter) {
         <div class="rating-num" style="color:${getRatingColor(b.rating)}">${b.rating || '—'}</div>
       </div>
     </div>`).join('');
+  requestAnimationFrame(() => {
+    grid.style.minHeight = '';
+    window.scrollTo({ top: savedScroll, behavior: 'instant' });
+  });
 
   const pag = document.getElementById('booksPagination');
   if (totalPages <= 1) { pag.innerHTML = ''; return; }
+  const btnStyle = 'width:2.2rem;height:2.2rem;border:1px solid rgba(255,255,255,0.25);background:transparent;border-radius:50%;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.75);flex-shrink:0;padding:0;';
+  const spanStyle = 'color:rgba(255,255,255,0.5);font-size:0.8rem;font-family:sans-serif;min-width:7rem;text-align:center;white-space:nowrap;';
+  pag.style.cssText = 'display:flex;align-items:center;justify-content:center;gap:1rem;margin-top:2rem;';
   pag.innerHTML = `
-    <button class="books-page-btn" onclick="goBooksPage(${currentBooksPage-1})" ${currentBooksPage===1?'disabled':''}>‹</button>
-    <span class="books-page-info">Стр. ${currentBooksPage} / ${totalPages}</span>
-    <button class="books-page-btn" onclick="goBooksPage(${currentBooksPage+1})" ${currentBooksPage===totalPages?'disabled':''}>›</button>`;
+    <button style="${btnStyle}${currentBooksPage===1?'opacity:0.25;cursor:default;':''}" onclick="goBooksPage(${currentBooksPage-1})" ${currentBooksPage===1?'disabled':''}><svg width="8" height="14" viewBox="0 0 8 14" fill="none"><path d="M7 1L1 7L7 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <span style="${spanStyle}">Стр. ${currentBooksPage} / ${totalPages}</span>
+    <button style="${btnStyle}${currentBooksPage===totalPages?'opacity:0.25;cursor:default;':''}" onclick="goBooksPage(${currentBooksPage+1})" ${currentBooksPage===totalPages?'disabled':''}><svg width="8" height="14" viewBox="0 0 8 14" fill="none"><path d="M1 1L7 7L1 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>`;
 }
 
 function goBooksPage(p) {
+  const scrollY = window.scrollY;
   currentBooksPage = p;
   renderBooks();
-  document.getElementById('books').scrollIntoView({behavior:'smooth', block:'start'});
+  // Use double RAF to ensure DOM has settled before restoring scroll
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      window.scrollTo({ top: scrollY, behavior: 'instant' });
+    });
+  });
 }
 
 renderBooks('all');
@@ -2023,6 +1900,7 @@ const HISTORY_PER_PAGE = 6;
 let currentHistoryPage = 1;
 
 const historyData = [
+  { date: "Март 2026", title: "Камера обскура", author: "Владимир Набоков", rating: 9.0 },
   { date: "Январь 2026", title: "В канун Рождества", author: "Розамунда Пилчер", rating: 1.67 },
   { date: "Декабрь 2025", title: "The Unquiet Bones", author: "Loreth Anne White", rating: 7.6 },
   { date: "Ноябрь 2025", title: "Книга Чтец", author: "Бернхард Шлинк", rating: 7.71 },
@@ -2070,10 +1948,13 @@ function renderHistory() {
       <div class="meeting-score" style="color:${historyRatingColor(h.rating)}">${h.rating !== null ? h.rating : '—'}</div>
     </div>`).join('');
 
-  document.getElementById('historyNav').innerHTML = `
-    <button class="history-nav-btn" onclick="goHistoryPage(${currentHistoryPage-1})" ${currentHistoryPage===1?'disabled':''}>‹</button>
-    <span class="history-page-info">${currentHistoryPage} / ${totalPages}</span>
-    <button class="history-nav-btn" onclick="goHistoryPage(${currentHistoryPage+1})" ${currentHistoryPage===totalPages?'disabled':''}>›</button>`;
+  const hBtnStyle = 'width:2rem;height:2rem;border:1px solid rgba(26,16,24,0.15);background:white;border-radius:50%;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;color:#1a1018;flex-shrink:0;padding:0;';
+  const hNav = document.getElementById('historyNav');
+  hNav.style.cssText = 'display:flex;align-items:center;gap:0.8rem;margin-top:1.2rem;';
+  hNav.innerHTML = `
+    <button style="${hBtnStyle}${currentHistoryPage===1?'opacity:0.3;cursor:default;':''}" onclick="goHistoryPage(${currentHistoryPage-1})" ${currentHistoryPage===1?'disabled':''}><svg width="6" height="11" viewBox="0 0 6 11" fill="none"><path d="M5 1L1 5.5L5 10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <span style="font-size:0.78rem;color:#9a8a92;">${currentHistoryPage} / ${totalPages}</span>
+    <button style="${hBtnStyle}${currentHistoryPage===totalPages?'opacity:0.3;cursor:default;':''}" onclick="goHistoryPage(${currentHistoryPage+1})" ${currentHistoryPage===totalPages?'disabled':''}><svg width="6" height="11" viewBox="0 0 6 11" fill="none"><path d="M1 1L5 5.5L1 10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>`;
 }
 
 function goHistoryPage(p) {
@@ -2089,7 +1970,7 @@ const observer = new IntersectionObserver(entries => {
 }, { threshold: 0.08 });
 document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-// ---- FORM VALIDATION ----
+// ---- FORM ----
 async function handleSubmit(e) {
   e.preventDefault();
   const name = document.getElementById('f-name').value.trim();
@@ -2097,79 +1978,81 @@ async function handleSubmit(e) {
   const format = document.getElementById('f-format').value;
   const fav = document.getElementById('f-fav').value.trim();
   const gdpr = document.getElementById('f-gdpr').checked;
-
   let valid = true;
-  [
-    { id: 'f-name', errId: 'err-name', val: name },
-    { id: 'f-contact', errId: 'err-contact', val: contact },
-    { id: 'f-format', errId: 'err-format', val: format },
-    { id: 'f-fav', errId: 'err-fav', val: fav },
-  ].forEach(f => {
-    const el = document.getElementById(f.id);
-    const err = document.getElementById(f.errId);
-    if (!f.val) { el.classList.add('invalid'); err.style.display = 'block'; valid = false; }
-    else { el.classList.remove('invalid'); err.style.display = 'none'; }
+  [{id:'f-name',errId:'err-name',val:name},{id:'f-contact',errId:'err-contact',val:contact},{id:'f-format',errId:'err-format',val:format},{id:'f-fav',errId:'err-fav',val:fav}]
+  .forEach(f => {
+    const el = document.getElementById(f.id), err = document.getElementById(f.errId);
+    if (!f.val) { el.classList.add('invalid'); err.style.display='block'; valid=false; }
+    else { el.classList.remove('invalid'); err.style.display='none'; }
   });
-  if (!gdpr) { document.getElementById('err-gdpr').style.display = 'block'; valid = false; }
-  else { document.getElementById('err-gdpr').style.display = 'none'; }
+  if (!gdpr) { document.getElementById('err-gdpr').style.display='block'; valid=false; }
+  else { document.getElementById('err-gdpr').style.display='none'; }
   if (!valid) return;
-
   const token = '8321456603:AAFrwqQuJXrKcn6GrlkHLF8R5IPUBVnilnY';
   const chatIds = ['456436881', '-1002450093842'];
   const text = `🌸 *Новая заявка в Сплетницы!*\n\n👤 *Имя:* ${name}\n📱 *Telegram/Instagram:* ${contact}\n📍 *Формат:* ${format}\n📚 *Любимая книга/жанр:* ${fav}`;
   try {
-    await Promise.all(chatIds.map(id =>
-      fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ chat_id: id, text, parse_mode: 'Markdown' })
-      })
-    ));
-  } catch(err) { console.error('TG error:', err); }
-  document.getElementById('joinForm').style.display = 'none';
-  document.getElementById('successMsg').style.display = 'block';
+    await Promise.all(chatIds.map(id => fetch(`https://api.telegram.org/bot${token}/sendMessage`,
+      {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:id,text,parse_mode:'Markdown'})})));
+  } catch(err) { console.error(err); }
+  document.getElementById('joinForm').style.display='none';
+  document.getElementById('successMsg').style.display='block';
 }
 
 // ---- LIGHTBOX ----
-let lbImages = [];
-let lbIndex = 0;
-
+let lbImages=[], lbIndex=0;
 function initLightbox() {
   const items = document.querySelectorAll('.gallery-item img');
   lbImages = Array.from(items).map(img => img.src);
-  items.forEach((img, i) => { img.parentElement.addEventListener('click', () => openLB(i)); });
+  items.forEach((img,i) => { img.parentElement.addEventListener('click', () => openLB(i)); });
 }
 function openLB(i) {
-  lbIndex = i;
-  document.getElementById('lightboxImg').src = lbImages[i];
+  lbIndex=i;
+  document.getElementById('lightboxImg').src=lbImages[i];
   document.getElementById('lightbox').classList.add('active');
-  document.getElementById('lightboxCounter').textContent = (i + 1) + ' / ' + lbImages.length;
-  document.body.style.overflow = 'hidden';
+  document.getElementById('lightboxCounter').textContent=(i+1)+' / '+lbImages.length;
+  document.body.style.overflow='hidden';
 }
-function closeLB() {
-  document.getElementById('lightbox').classList.remove('active');
-  document.body.style.overflow = '';
-}
-function closeLightbox(e) {
-  if (e.target === document.getElementById('lightbox')) closeLB();
-}
+function closeLB() { document.getElementById('lightbox').classList.remove('active'); document.body.style.overflow=''; }
+function closeLightbox(e) { if(e.target===document.getElementById('lightbox')) closeLB(); }
 function shiftLB(dir) {
-  lbIndex = (lbIndex + dir + lbImages.length) % lbImages.length;
-  document.getElementById('lightboxImg').src = lbImages[lbIndex];
-  document.getElementById('lightboxCounter').textContent = (lbIndex + 1) + ' / ' + lbImages.length;
+  lbIndex=(lbIndex+dir+lbImages.length)%lbImages.length;
+  document.getElementById('lightboxImg').src=lbImages[lbIndex];
+  document.getElementById('lightboxCounter').textContent=(lbIndex+1)+' / '+lbImages.length;
 }
 document.addEventListener('keydown', e => {
-  if (!document.getElementById('lightbox').classList.contains('active')) return;
-  if (e.key === 'Escape') closeLB();
-  if (e.key === 'ArrowRight') shiftLB(1);
-  if (e.key === 'ArrowLeft') shiftLB(-1);
+  if(!document.getElementById('lightbox').classList.contains('active')) return;
+  if(e.key==='Escape') closeLB();
+  if(e.key==='ArrowRight') shiftLB(1);
+  if(e.key==='ArrowLeft') shiftLB(-1);
 });
 initLightbox();
 </script>
 
 
+
+<!-- LIGHTBOX -->
+<div id="lightbox" onclick="closeLightbox(event)" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:10000;align-items:center;justify-content:center;flex-direction:column;">
+  <button onclick="closeLB()" style="position:absolute;top:1.2rem;right:1.5rem;background:none;border:none;color:white;font-size:2rem;cursor:pointer;line-height:1;">×</button>
+  <button onclick="shiftLB(-1)" style="position:absolute;left:1.2rem;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.1);border:none;color:white;font-size:2rem;cursor:pointer;width:3rem;height:3rem;border-radius:50%;display:flex;align-items:center;justify-content:center;">‹</button>
+  <img id="lightboxImg" src="" style="max-width:90vw;max-height:85vh;object-fit:contain;border-radius:4px;">
+  <div id="lightboxCounter" style="color:rgba(255,255,255,0.6);font-size:0.85rem;margin-top:1rem;"></div>
+  <button onclick="shiftLB(1)" style="position:absolute;right:1.2rem;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.1);border:none;color:white;font-size:2rem;cursor:pointer;width:3rem;height:3rem;border-radius:50%;display:flex;align-items:center;justify-content:center;">›</button>
+</div>
+
 </body>
 </html>
 
+
+
+<!-- LIGHTBOX -->
+<div id="lightbox" onclick="closeLightbox(event)" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:10000;align-items:center;justify-content:center;flex-direction:column;">
+  <button onclick="closeLB()" style="position:absolute;top:1.2rem;right:1.5rem;background:none;border:none;color:white;font-size:2rem;cursor:pointer;line-height:1;">×</button>
+  <button onclick="shiftLB(-1)" style="position:absolute;left:1.2rem;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.1);border:none;color:white;font-size:2rem;cursor:pointer;width:3rem;height:3rem;border-radius:50%;display:flex;align-items:center;justify-content:center;">‹</button>
+  <img id="lightboxImg" src="" style="max-width:90vw;max-height:85vh;object-fit:contain;border-radius:4px;">
+  <div id="lightboxCounter" style="color:rgba(255,255,255,0.6);font-size:0.85rem;margin-top:1rem;"></div>
+  <button onclick="shiftLB(1)" style="position:absolute;right:1.2rem;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.1);border:none;color:white;font-size:2rem;cursor:pointer;width:3rem;height:3rem;border-radius:50%;display:flex;align-items:center;justify-content:center;">›</button>
+</div>
 
 </body>
 </html>
