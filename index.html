@@ -1402,6 +1402,20 @@
     .pres-desc { font-size: 0.7rem; }
   }
 </style>
+
+<!-- Netlify Identity Widget -->
+<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+<script>
+  // Handle invite and recovery tokens from email links
+  if (window.location.hash && (
+    window.location.hash.indexOf('invite_token') > -1 ||
+    window.location.hash.indexOf('recovery_token') > -1 ||
+    window.location.hash.indexOf('confirmation_token') > -1
+  )) {
+    // Redirect to admin page where the identity widget can handle the token
+    window.location.href = '/admin/index.html' + window.location.hash;
+  }
+</script>
 </head>
 <body>
 
