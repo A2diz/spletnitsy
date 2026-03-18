@@ -2003,14 +2003,17 @@ async function handleSubmit(e) {
   else { document.getElementById('err-gdpr').style.display='none'; }
   if (!valid) return;
   try {
-    await fetch('/.netlify/functions/send', {
+    const response = await fetch('/.netlify/functions/send', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, contact, format, fav })
     });
-  } catch(err) { console.error(err); }
-  document.getElementById('joinForm').style.display='none';
-  document.getElementById('successMsg').style.display='block';
+    if (!response.ok) throw new Error('Server error: ' + response.status);
+    document.getElementById('joinForm').style.display='none';
+    document.getElementById('successMsg').style.display='block';
+  } catch(err) {
+    alert('Ошибка при отправке заявки. Пожалуйста, попробуйте позже.');
+  }
 }
 
 // ---- LIGHTBOX ----
@@ -2042,20 +2045,6 @@ document.addEventListener('keydown', e => {
 });
 initLightbox();
 </script>
-
-
-
-<!-- LIGHTBOX -->
-<div id="lightbox" onclick="closeLightbox(event)" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:10000;align-items:center;justify-content:center;flex-direction:column;">
-  <button onclick="closeLB()" style="position:absolute;top:1.2rem;right:1.5rem;background:none;border:none;color:white;font-size:2rem;cursor:pointer;line-height:1;">×</button>
-  <button onclick="shiftLB(-1)" style="position:absolute;left:1.2rem;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.1);border:none;color:white;font-size:2rem;cursor:pointer;width:3rem;height:3rem;border-radius:50%;display:flex;align-items:center;justify-content:center;">‹</button>
-  <img id="lightboxImg" src="" style="max-width:90vw;max-height:85vh;object-fit:contain;border-radius:4px;">
-  <div id="lightboxCounter" style="color:rgba(255,255,255,0.6);font-size:0.85rem;margin-top:1rem;"></div>
-  <button onclick="shiftLB(1)" style="position:absolute;right:1.2rem;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.1);border:none;color:white;font-size:2rem;cursor:pointer;width:3rem;height:3rem;border-radius:50%;display:flex;align-items:center;justify-content:center;">›</button>
-</div>
-
-</body>
-</html>
 
 
 

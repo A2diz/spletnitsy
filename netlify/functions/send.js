@@ -21,13 +21,18 @@ exports.handler = async function(event) {
   const text = `🌸 *Новая заявка в Сплетницы!*\n\n👤 *Имя:* ${name}\n📱 *Telegram/Instagram:* ${contact}\n📍 *Формат:* ${format}\n📚 *Любимая книга/жанр:* ${fav}`;
 
   try {
-    await Promise.all(chatIds.map(id =>
+    const responses = await Promise.all(chatIds.map(id =>
       fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ chat_id: id, text, parse_mode: 'Markdown' })
       })
     ));
+    for (const res of responses) {
+      if (!res.ok) {
+        return { statusCode: 500, body: 'Telegram error: ' + res.status };
+      }
+    }
     return { statusCode: 200, body: 'OK' };
   } catch (err) {
     return { statusCode: 500, body: 'Telegram error' };
