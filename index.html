@@ -2002,12 +2002,12 @@ async function handleSubmit(e) {
   if (!gdpr) { document.getElementById('err-gdpr').style.display='block'; valid=false; }
   else { document.getElementById('err-gdpr').style.display='none'; }
   if (!valid) return;
-  const token = '8321456603:AAFrwqQuJXrKcn6GrlkHLF8R5IPUBVnilnY';
-  const chatIds = ['456436881', '-1002450093842'];
-  const text = `🌸 *Новая заявка в Сплетницы!*\n\n👤 *Имя:* ${name}\n📱 *Telegram/Instagram:* ${contact}\n📍 *Формат:* ${format}\n📚 *Любимая книга/жанр:* ${fav}`;
   try {
-    await Promise.all(chatIds.map(id => fetch(`https://api.telegram.org/bot${token}/sendMessage`,
-      {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:id,text,parse_mode:'Markdown'})})));
+    await fetch('/.netlify/functions/send', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, contact, format, fav })
+    });
   } catch(err) { console.error(err); }
   document.getElementById('joinForm').style.display='none';
   document.getElementById('successMsg').style.display='block';
