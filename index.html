@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Сплетницы — Книжный Клуб</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -262,7 +264,7 @@
   .book-card:nth-child(3) { transform: rotate(1deg) translateY(-0.5rem); }
   .book-card:nth-child(4) { transform: rotate(-2deg) translateY(0.5rem); }
 
-  .book-card:hover { transform: rotate(0) scale(1.03) translateY(-4px) !important; z-index: 10; }
+  .book-card:hover { transform: rotate(0) scale(1.03) translateY(-4px); z-index: 10; }
 
   .book-card-title {
     font-family: 'Playfair Display', serif;
@@ -1096,8 +1098,11 @@
     margin-top: 1rem;
   }
 
-  /* MOBILE */
-  rem;
+  /* LIGHTBOX */
+  .lightbox-close {
+    position: absolute;
+    top: 1.2rem;
+    right: 1.5rem;
     color: white;
     font-size: 2rem;
     cursor: pointer;
@@ -1148,8 +1153,30 @@
   .gallery-item { cursor: zoom-in; }
 
 
-  #lightbox { display: none; }
-  #lightbox.active { display: flex !important; }
+  #lightbox {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.92);
+    z-index: 10000;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+  #lightbox.active { display: flex; }
+
+  #lightboxImg {
+    max-width: 90vw;
+    max-height: 85vh;
+    object-fit: contain;
+    border-radius: 4px;
+  }
+
+  #lightboxCounter {
+    color: rgba(255,255,255,0.6);
+    font-size: 0.85rem;
+    margin-top: 1rem;
+  }
 
   @media (max-width: 768px) {
   /* NAV - two rows on mobile */
@@ -1404,7 +1431,7 @@
 </style>
 
 <!-- Netlify Identity Widget -->
-<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+<script src="https://identity.netlify.com/v1/netlify-identity-widget.js" defer></script>
 <script>
   // Handle invite and recovery tokens from email links
   if (window.location.hash && (
@@ -2008,7 +2035,7 @@ async function handleSubmit(e) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, contact, format, fav })
     });
-  } catch(err) { console.error(err); }
+  } catch(err) { /* ошибка отправки */ }
   document.getElementById('joinForm').style.display='none';
   document.getElementById('successMsg').style.display='block';
 }
@@ -2046,26 +2073,12 @@ initLightbox();
 
 
 <!-- LIGHTBOX -->
-<div id="lightbox" onclick="closeLightbox(event)" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:10000;align-items:center;justify-content:center;flex-direction:column;">
-  <button onclick="closeLB()" style="position:absolute;top:1.2rem;right:1.5rem;background:none;border:none;color:white;font-size:2rem;cursor:pointer;line-height:1;">×</button>
-  <button onclick="shiftLB(-1)" style="position:absolute;left:1.2rem;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.1);border:none;color:white;font-size:2rem;cursor:pointer;width:3rem;height:3rem;border-radius:50%;display:flex;align-items:center;justify-content:center;">‹</button>
-  <img id="lightboxImg" src="" style="max-width:90vw;max-height:85vh;object-fit:contain;border-radius:4px;">
-  <div id="lightboxCounter" style="color:rgba(255,255,255,0.6);font-size:0.85rem;margin-top:1rem;"></div>
-  <button onclick="shiftLB(1)" style="position:absolute;right:1.2rem;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.1);border:none;color:white;font-size:2rem;cursor:pointer;width:3rem;height:3rem;border-radius:50%;display:flex;align-items:center;justify-content:center;">›</button>
-</div>
-
-</body>
-</html>
-
-
-
-<!-- LIGHTBOX -->
-<div id="lightbox" onclick="closeLightbox(event)" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:10000;align-items:center;justify-content:center;flex-direction:column;">
-  <button onclick="closeLB()" style="position:absolute;top:1.2rem;right:1.5rem;background:none;border:none;color:white;font-size:2rem;cursor:pointer;line-height:1;">×</button>
-  <button onclick="shiftLB(-1)" style="position:absolute;left:1.2rem;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.1);border:none;color:white;font-size:2rem;cursor:pointer;width:3rem;height:3rem;border-radius:50%;display:flex;align-items:center;justify-content:center;">‹</button>
-  <img id="lightboxImg" src="" style="max-width:90vw;max-height:85vh;object-fit:contain;border-radius:4px;">
-  <div id="lightboxCounter" style="color:rgba(255,255,255,0.6);font-size:0.85rem;margin-top:1rem;"></div>
-  <button onclick="shiftLB(1)" style="position:absolute;right:1.2rem;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.1);border:none;color:white;font-size:2rem;cursor:pointer;width:3rem;height:3rem;border-radius:50%;display:flex;align-items:center;justify-content:center;">›</button>
+<div id="lightbox" onclick="closeLightbox(event)">
+  <button onclick="closeLB()" class="lightbox-close">×</button>
+  <button onclick="shiftLB(-1)" class="lightbox-prev">‹</button>
+  <img id="lightboxImg" src="" alt="Фото из галереи">
+  <div id="lightboxCounter"></div>
+  <button onclick="shiftLB(1)" class="lightbox-next">›</button>
 </div>
 
 </body>
