@@ -5,8 +5,6 @@ on:
     types: [opened, synchronize, reopened]
   issue_comment:
     types: [created]
-  issues:
-    types: [opened]
 
 permissions:
   contents: write
@@ -44,22 +42,3 @@ jobs:
         uses: anthropics/claude-code-action@v1
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-
-  # ─── Авто-реакция на новое issue ────────────────────────────────────────────
-  claude-on-issue:
-    name: Claude — анализ нового issue
-    runs-on: ubuntu-latest
-    if: github.event_name == 'issues' && github.event.action == 'opened'
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Проанализировать issue
-        uses: anthropics/claude-code-action@v1
-        with:
-          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-          prompt: |
-            Прочитай это issue и:
-            1. Оцени сложность задачи
-            2. Предложи план реализации (файлы которые нужно создать/изменить)
-            3. Если задача простая — реализуй её сразу, создай нужные файлы и открой PR
-            4. Отвечай на русском языке
