@@ -4,22 +4,35 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Сплетницы — Админка</title>
-  <!-- Netlify Identity Widget - должен быть ДО Decap CMS -->
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 </head>
 <body>
-  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
   <script>
-    // Инициализируем Identity после загрузки
-    if (window.netlifyIdentity) {
-      window.netlifyIdentity.on("init", user => {
-        if (!user) {
-          window.netlifyIdentity.on("login", () => {
-            document.location.href = "/admin/";
-          });
-        }
-      });
+    // Перехватываем invite_token ДО загрузки CMS
+    // Identity widget должен обработать токен первым
+    window.netlifyIdentity = window.netlifyIdentity || {};
+
+    if (window.location.hash) {
+      const hash = window.location.hash.substring(1);
+      const params = new URLSearchParams(hash);
+      
+      const inviteToken = params.get('invite_token');
+      const recoveryToken = params.get('recovery_token');
+      
+      if (inviteToken || recoveryToken) {
+        // Ждём загрузки Identity widget
+        document.addEventListener('DOMContentLoaded', function() {
+          setTimeout(function() {
+            if (window.netlifyIdentity) {
+              window.netlifyIdentity.open(inviteToken ? 'invite' : 'recovery');
+            }
+          }, 500);
+        });
+      }
     }
   </script>
+
+  <!-- Загружаем CMS только после обработки токена -->
+  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
 </body>
 </html>
