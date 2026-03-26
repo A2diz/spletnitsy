@@ -4,38 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Сплетницы — Админка</title>
-  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 </head>
 <body>
-  <script>
-    window.addEventListener('load', function() {
-      const hash = window.location.hash.substring(1);
-      const params = new URLSearchParams(hash);
-      const inviteToken = params.get('invite_token');
-      const recoveryToken = params.get('recovery_token');
-
-      if (inviteToken) {
-        // Открываем виджет в режиме принятия инвайта
-        window.netlifyIdentity.open('invite');
-      } else if (recoveryToken) {
-        window.netlifyIdentity.open('recovery');  
-      } else {
-        // Нет токена — просто загружаем CMS
-        loadCMS();
-      }
-
-      // После входа/создания пароля — загружаем CMS
-      window.netlifyIdentity.on('login', function() {
-        window.netlifyIdentity.close();
-        loadCMS();
-      });
-    });
-
-    function loadCMS() {
-      var script = document.createElement('script');
-      script.src = 'https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js';
-      document.body.appendChild(script);
-    }
-  </script>
+  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
 </body>
 </html>
