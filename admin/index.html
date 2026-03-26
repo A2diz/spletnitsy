@@ -8,31 +8,34 @@
 </head>
 <body>
   <script>
-    // Перехватываем invite_token ДО загрузки CMS
-    // Identity widget должен обработать токен первым
-    window.netlifyIdentity = window.netlifyIdentity || {};
-
-    if (window.location.hash) {
+    window.addEventListener('load', function() {
       const hash = window.location.hash.substring(1);
       const params = new URLSearchParams(hash);
-      
       const inviteToken = params.get('invite_token');
       const recoveryToken = params.get('recovery_token');
-      
-      if (inviteToken || recoveryToken) {
-        // Ждём загрузки Identity widget
-        document.addEventListener('DOMContentLoaded', function() {
-          setTimeout(function() {
-            if (window.netlifyIdentity) {
-              window.netlifyIdentity.open(inviteToken ? 'invite' : 'recovery');
-            }
-          }, 500);
-        });
+
+      if (inviteToken) {
+        // Открываем виджет в режиме принятия инвайта
+        window.netlifyIdentity.open('invite');
+      } else if (recoveryToken) {
+        window.netlifyIdentity.open('recovery');  
+      } else {
+        // Нет токена — просто загружаем CMS
+        loadCMS();
       }
+
+      // После входа/создания пароля — загружаем CMS
+      window.netlifyIdentity.on('login', function() {
+        window.netlifyIdentity.close();
+        loadCMS();
+      });
+    });
+
+    function loadCMS() {
+      var script = document.createElement('script');
+      script.src = 'https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js';
+      document.body.appendChild(script);
     }
   </script>
-
-  <!-- Загружаем CMS только после обработки токена -->
-  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
 </body>
 </html>
