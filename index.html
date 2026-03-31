@@ -2029,6 +2029,13 @@ const books = [
   { title: "Rock Paper Scissors", author: "Alice Feeney", rating: 6.33, year: 2023, date: "Июл 2023" },
 ];
 
+let currentBookKey = 'Внутри секты|Михаил Вершинин';
+let lastSavedBookKey = null;
+let currentStarRating = 0;
+let allVotes = [];
+let sharedArchive = {};
+let ratingsStorageMode = 'local';
+
 function getRatingColor(r) {
   if (!r) return 'rgba(255,255,255,0.3)';
   if (r >= 8) return '#d4a843';
@@ -2215,13 +2222,6 @@ const CURRENT_BOOK_URL = `${SITE_BASE}/_data/current_book.json`;
 const STATIC_RATINGS_URL = `${SITE_BASE}/_data/ratings.json`;
 const NETLIFY_FUNCTIONS_BASE = 'https://bkspletnitsy.netlify.app/.netlify/functions';
 const SHARED_RATINGS_API = window.RATINGS_API_URL || `${NETLIFY_FUNCTIONS_BASE}/ratings`;
-
-let currentBookKey = 'Внутри секты|Михаил Вершинин';
-let lastSavedBookKey = null;
-let currentStarRating = 0;
-let allVotes = [];
-let sharedArchive = {};
-let ratingsStorageMode = 'local';
 
 function normalizeAuthorText(authorText = '') {
   return authorText.replace(/^by\s+/i, '').trim();
@@ -2583,6 +2583,10 @@ async function deleteVote(id) {
   renderVotes();
 }
 
+// Показываем книги и историю сразу, не ждём async
+renderBooks('all');
+renderHistory();
+
 initStars();
 loadCurrentBookData().catch(error => {
   console.warn('Current book initialization failed:', error);
@@ -2591,6 +2595,8 @@ loadCurrentBookData().catch(error => {
   setRatingStatus('Не удалось загрузить оценки — обновите страницу.', false);
   updateStarDisplay();
   renderVotes();
+  renderBooks('all');
+  renderHistory();
 });
 
 // ---- PARTICIPANTS ----
