@@ -2601,14 +2601,14 @@ loadCurrentBookData().catch(error => {
 
 // ---- PARTICIPANTS ----
 const participants = [
-  { name: "Наташа", desc: "Проджект менеджер сплетниц" },
-  { name: "Даша", desc: "Эксперт по аутистам" },
-  { name: "Алиса", desc: "Живёт иллюзиями, но книги ей дают реальность" },
-  { name: "Лена", desc: "Помнит каждого персонажа лучше, чем авторы" },
-  { name: "Маха", desc: "Спит на встречах, но все равно пишет отзывы" },
-  { name: "Маруся", desc: "Всегда куда-то идет" },
-  { name: "Лиза", desc: "Обожает романтичные истории и делает отличный чай" },
-  { name: "Юля", desc: "Всегда самая смешная" }
+  { name: "Наташа", desc: "Проджект менеджер сплетниц", photo: "natasha.jpg" },
+  { name: "Даша", desc: "Эксперт по аутистам", photo: "dasha.jpg" },
+  { name: "Алиса", desc: "Живёт иллюзиями, но книги ей дают реальность", photo: "alisa.jpg" },
+  { name: "Лена", desc: "Помнит каждого персонажа лучше, чем авторы", photo: "lena.jpg" },
+  { name: "Маха", desc: "Спит на встречах, но все равно пишет отзывы", photo: "masha.jpg" },
+  { name: "Маруся", desc: "Всегда куда-то идет", photo: "marusya.jpg" },
+  { name: "Лиза", desc: "Обожает романтичные истории и делает отличный чай", photo: "liza.jpg" },
+  { name: "Юля", desc: "Всегда самая смешная", photo: "yulya.jpg" }
 ];
 
 function renderParticipants() {
@@ -2618,7 +2618,7 @@ function renderParticipants() {
   grid.innerHTML = participants.map(p => `
     <div class="participant-card">
       <div class="participant-photo">
-        <img src="https://via.placeholder.com/180?text=${p.name.charAt(0)}" alt="${p.name}" loading="lazy" onerror="this.textContent='${p.name.charAt(0)}'">
+        <img src="${SITE_BASE}/images/members/${p.photo}" alt="${p.name}" loading="lazy" onerror="this.style.display='none';this.parentElement.innerHTML='<span style=\'font-size:2rem;font-weight:700;color:#e8407a;\'>' + p.name.charAt(0) + '</span>'">
       </div>
       <div class="participant-name">${p.name}</div>
       <div class="participant-desc">${p.desc}</div>
