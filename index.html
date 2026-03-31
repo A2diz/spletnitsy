@@ -1777,6 +1777,9 @@
     <div style="font-size:0.9rem; color:#5a4a52; margin-bottom:1.2rem;">
       Средняя оценка: <span id="avgRating" style="font-weight:700; color:var(--rose); font-size:1.1rem;">—</span> ★
     </div>
+    <div id="ratingStatus" style="font-size:0.78rem; color:#7a6a72; margin:-0.4rem 0 1rem;">
+      Проверяю сохранение оценок…
+    </div>
     
     <!-- VOTES LIST -->
     <div id="votesList" style="margin-bottom:1.5rem; max-height:150px; overflow-y:auto;">
@@ -2029,7 +2032,14 @@ function getRatingColor(r) {
 }
 
 function getArchivedRating(bookTitle, bookAuthor) {
-  const archiveKey = `archive_${bookTitle}|${bookAuthor}`;
+  const bookKey = `${bookTitle}|${bookAuthor}`;
+  const sharedArchived = typeof sharedArchive === 'object' ? sharedArchive[bookKey] : null;
+
+  if (sharedArchived && sharedArchived.rating !== null && sharedArchived.rating !== undefined) {
+    return sharedArchived.rating;
+  }
+
+  const archiveKey = `archive_${bookKey}`;
   const archived = JSON.parse(localStorage.getItem(archiveKey));
   return archived ? archived.rating : null;
 }
@@ -2163,15 +2173,18 @@ function renderHistory() {
   const start = (currentHistoryPage - 1) * HISTORY_PER_PAGE;
   const page = historyData.slice(start, start + HISTORY_PER_PAGE);
 
-  document.getElementById('historyPages').innerHTML = page.map(h => `
+  document.getElementById('historyPages').innerHTML = page.map(h => {
+    const displayRating = h.rating !== null && h.rating !== undefined ? h.rating : getArchivedRating(h.title, h.author);
+    return `
     <div class="past-meeting-item">
       <div class="meeting-month">${h.date.split(' ')[0]}<br>${h.date.split(' ')[1]}</div>
       <div>
         <div class="meeting-book-title">${h.title}</div>
         <div class="meeting-book-author">${h.author}</div>
       </div>
-      <div class="meeting-score" style="color:${historyRatingColor(h.rating)}">${h.rating !== null ? h.rating : '—'}</div>
-    </div>`).join('');
+      <div class="meeting-score" style="color:${historyRatingColor(displayRating)}">${displayRating !== null && displayRating !== undefined ? displayRating : '—'}</div>
+    </div>`;
+  }).join('');
 
   const hBtnStyle = 'width:2rem;height:2rem;border:1px solid rgba(26,16,24,0.15);background:white;border-radius:50%;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;color:#1a1018;flex-shrink:0;padding:0;';
   const hNav = document.getElementById('historyNav');
@@ -2190,62 +2203,199 @@ function goHistoryPage(p) {
 renderHistory();
 
 // ---- CURRENT BOOK RATING SYSTEM ----
+const SITE_BASE = window.location.pathname.startsWith('/spletnitsy') ? '/spletnitsy' : '';
+const CURRENT_BOOK_URL = `${SITE_BASE}/_data/current_book.json`;
+const STATIC_RATINGS_URL = `${SITE_BASE}/_data/ratings.json`;
+const SHARED_RATINGS_API = (() => {
+  if (window.RATINGS_API_URL) return window.RATINGS_API_URL;
+
+  try {
+    const savedUrl = localStorage.getItem('ratings_api_url');
+    if (savedUrl) return savedUrl;
+  } catch {}
+
+  return window.location.hostname.endsWith('github.io') ? null : '/.netlify/functions/ratings';
+})();
+
 let currentBookKey = 'Внутри секты|Михаил Вершинин';
 let lastSavedBookKey = null;
 let currentStarRating = 0;
 let allVotes = [];
+let sharedArchive = {};
+let ratingsStorageMode = 'local';
 
-function loadCurrentBookData() {
-  // Загружаем текущую книгу из JSON
-  fetch('/_data/current_book.json')
-    .then(r => r.json())
-    .then(data => {
-      const newBookKey = `${data.title}|${data.author}`;
-      
-      // Если книга изменилась, архивируем старую
-      if (lastSavedBookKey && lastSavedBookKey !== newBookKey) {
-        archivePreviousBookRating(lastSavedBookKey);
-      }
-      
-      lastSavedBookKey = newBookKey;
-      currentBookKey = newBookKey;
-      document.getElementById('currentBookTitle').textContent = data.title;
-      document.getElementById('currentBookAuthor').textContent = data.author;
-      
-      // Загружаем оценки для текущей книги
-      allVotes = JSON.parse(localStorage.getItem(currentBookKey)) || [];
-      currentStarRating = 0;
-      document.getElementById('nameInput').value = '';
-      
-      updateStarDisplay();
-      renderVotes();
-    })
-    .catch(err => console.error('Ошибка загрузки книги:', err));
+function normalizeAuthorText(authorText = '') {
+  return authorText.replace(/^by\s+/i, '').trim();
+}
+
+function escapeHtml(value = '') {
+  const div = document.createElement('div');
+  div.textContent = value;
+  return div.innerHTML;
+}
+
+function setRatingStatus(message, isShared = false) {
+  const statusEl = document.getElementById('ratingStatus');
+  if (!statusEl) return;
+
+  statusEl.textContent = message;
+  statusEl.style.color = isShared ? 'var(--rose)' : '#7a6a72';
+}
+
+function normalizeStoredRatings(data = {}) {
+  return {
+    currentBookKey: typeof data.currentBookKey === 'string' ? data.currentBookKey : '',
+    currentVotes: Array.isArray(data.currentVotes) ? data.currentVotes : [],
+    archive: data.archive && typeof data.archive === 'object' ? data.archive : {}
+  };
+}
+
+async function loadSharedRatingsFromApi(title, author) {
+  if (!SHARED_RATINGS_API) return false;
+
+  const url = `${SHARED_RATINGS_API}?bookKey=${encodeURIComponent(currentBookKey)}&title=${encodeURIComponent(title)}&author=${encodeURIComponent(author)}`;
+  const response = await fetch(url, { cache: 'no-store' });
+
+  if (!response.ok) {
+    throw new Error(`Shared ratings API returned ${response.status}`);
+  }
+
+  const payload = await response.json();
+  if (!payload.ok) {
+    throw new Error(payload.error || 'Shared ratings API error');
+  }
+
+  const data = normalizeStoredRatings(payload);
+  sharedArchive = data.archive;
+  allVotes = data.currentBookKey === currentBookKey ? data.currentVotes : [];
+  ratingsStorageMode = payload.storage === 'shared' ? 'shared' : 'readonly';
+
+  if (ratingsStorageMode === 'shared') {
+    setRatingStatus('Оценки сохраняются для всех участников ✅', true);
+  } else {
+    setRatingStatus('Показаны последние сохранённые оценки клуба.', true);
+  }
+
+  try {
+    localStorage.setItem(currentBookKey, JSON.stringify(allVotes));
+  } catch {}
+
+  return true;
+}
+
+async function loadSharedRatingsFromStaticFile() {
+  const response = await fetch(`${STATIC_RATINGS_URL}?t=${Date.now()}`, { cache: 'no-store' });
+
+  if (!response.ok) {
+    throw new Error(`Static ratings file returned ${response.status}`);
+  }
+
+  const data = normalizeStoredRatings(await response.json());
+  sharedArchive = data.archive;
+
+  if (data.currentBookKey === currentBookKey) {
+    allVotes = data.currentVotes;
+    ratingsStorageMode = 'readonly';
+    setRatingStatus('Показаны последние сохранённые оценки клуба.', true);
+    return true;
+  }
+
+  return false;
+}
+
+async function loadVotesForCurrentBook(title, author) {
+  try {
+    const sharedLoaded = await loadSharedRatingsFromApi(title, author);
+    if (sharedLoaded) return;
+  } catch (error) {
+    console.warn('Shared ratings API unavailable:', error);
+  }
+
+  try {
+    const staticLoaded = await loadSharedRatingsFromStaticFile();
+    if (staticLoaded) return;
+  } catch (error) {
+    console.warn('Static shared ratings unavailable:', error);
+  }
+
+  allVotes = JSON.parse(localStorage.getItem(currentBookKey)) || [];
+  ratingsStorageMode = 'local';
+
+  if (window.location.hostname.endsWith('github.io')) {
+    setRatingStatus('Оценки пока сохраняются только в этом браузере.', false);
+  } else {
+    setRatingStatus('Сервер недоступен — временно сохраняю только на этом устройстве.', false);
+  }
+}
+
+async function loadCurrentBookData() {
+  const titleElements = document.querySelectorAll('#currentBookTitle');
+  const authorElements = document.querySelectorAll('#currentBookAuthor');
+
+  let title = titleElements[0]?.textContent?.trim() || 'Внутри секты';
+  let author = normalizeAuthorText(authorElements[0]?.textContent || 'Михаил Вершинин');
+
+  try {
+    const response = await fetch(`${CURRENT_BOOK_URL}?t=${Date.now()}`, { cache: 'no-store' });
+    if (!response.ok) throw new Error(`Current book returned ${response.status}`);
+
+    const data = await response.json();
+    title = data.title?.trim() || title;
+    author = data.author?.trim() || author;
+  } catch (error) {
+    console.warn('Could not load current_book.json, using values from the page:', error);
+  }
+
+  const newBookKey = `${title}|${author}`;
+
+  if (lastSavedBookKey && lastSavedBookKey !== newBookKey) {
+    archivePreviousBookRating(lastSavedBookKey);
+  }
+
+  lastSavedBookKey = newBookKey;
+  currentBookKey = newBookKey;
+
+  titleElements.forEach(el => {
+    el.textContent = title;
+  });
+
+  authorElements.forEach((el, index) => {
+    el.textContent = index === 0 ? `by ${author}` : author;
+  });
+
+  currentStarRating = 0;
+  const nameInput = document.getElementById('nameInput');
+  if (nameInput) nameInput.value = '';
+
+  await loadVotesForCurrentBook(title, author);
+  updateStarDisplay();
+  renderVotes();
+  renderBooks();
+  renderHistory();
 }
 
 function archivePreviousBookRating(bookKey) {
   const votes = JSON.parse(localStorage.getItem(bookKey)) || [];
-  
+
   if (votes.length === 0) return;
-  
+
   const [title, author] = bookKey.split('|');
-  const avgRating = parseFloat((votes.reduce((sum, v) => sum + v.rating, 0) / votes.length).toFixed(2));
-  
-  // Сохраняем архив
+  const avgRating = parseFloat((votes.reduce((sum, vote) => sum + vote.rating, 0) / votes.length).toFixed(2));
+
   const archiveKey = `archive_${bookKey}`;
   const archivedData = {
-    title: title,
-    author: author,
+    title,
+    author,
     rating: avgRating,
     voteCount: votes.length,
-    votes: votes,
+    votes,
     archivedDate: new Date().toISOString()
   };
+
   localStorage.setItem(archiveKey, JSON.stringify(archivedData));
-  
-  // Удаляем текущие оценки (они архивированы)
+  sharedArchive[bookKey] = archivedData;
   localStorage.removeItem(bookKey);
-  
+
   console.log(`📚 Оценки для "${title}" архивированы с рейтингом ${avgRating}`);
 }
 
@@ -2253,36 +2403,43 @@ function getCurrentBookKey() {
   return currentBookKey;
 }
 
-// Проверяем обновления JSON каждые 5 секунд (для синхронизации если админ изменит)
-setInterval(loadCurrentBookData, 5000);
+setInterval(() => {
+  loadCurrentBookData();
+}, 15000);
 
 function initStars() {
   const starsDiv = document.getElementById('starsInput');
   if (!starsDiv) return;
+
   starsDiv.innerHTML = '';
   for (let i = 1; i <= 10; i++) {
     const star = document.createElement('span');
     star.className = 'star inactive';
     star.textContent = '★';
     star.dataset.value = i;
-    star.addEventListener('click', () => { currentStarRating = i; updateStarDisplay(); });
+    star.addEventListener('click', () => {
+      currentStarRating = i;
+      updateStarDisplay();
+    });
     star.addEventListener('mouseover', () => {
       for (let j = 1; j <= 10; j++) {
-        const s = starsDiv.children[j-1];
-        if (j <= i) s.classList.remove('inactive');
-        else s.classList.add('inactive');
+        const current = starsDiv.children[j - 1];
+        if (j <= i) current.classList.remove('inactive');
+        else current.classList.add('inactive');
       }
     });
     starsDiv.appendChild(star);
   }
+
   starsDiv.addEventListener('mouseout', updateStarDisplay);
 }
 
 function updateStarDisplay() {
   const starsDiv = document.getElementById('starsInput');
   if (!starsDiv) return;
+
   for (let i = 1; i <= 10; i++) {
-    const star = starsDiv.children[i-1];
+    const star = starsDiv.children[i - 1];
     if (i <= currentStarRating) star.classList.remove('inactive');
     else star.classList.add('inactive');
   }
@@ -2291,67 +2448,128 @@ function updateStarDisplay() {
 function renderVotes() {
   const votesList = document.getElementById('votesList');
   if (!votesList) return;
-  
+
   if (allVotes.length === 0) {
     votesList.innerHTML = '<div style="font-size:0.85rem; color:#c0a0b0; text-align:center; padding:0.8rem 0;">Оценок пока нет</div>';
     document.getElementById('avgRating').textContent = '—';
     return;
   }
-  
+
   allVotes.sort((a, b) => b.rating - a.rating);
-  votesList.innerHTML = allVotes.map(v => `
+  votesList.innerHTML = allVotes.map(vote => `
     <div class="vote-item">
       <div class="vote-name-rating">
-        <div class="vote-name">${v.name}</div>
-        <div class="vote-rating">${v.rating}</div>
+        <div class="vote-name">${escapeHtml(vote.name)}</div>
+        <div class="vote-rating">${vote.rating}</div>
       </div>
-      <button class="vote-delete" onclick="deleteVote(${v.id})">✕</button>
+      <button class="vote-delete" onclick="deleteVote(${vote.id})">✕</button>
     </div>
   `).join('');
-  
-  const avg = (allVotes.reduce((sum, v) => sum + v.rating, 0) / allVotes.length).toFixed(2);
+
+  const avg = (allVotes.reduce((sum, vote) => sum + vote.rating, 0) / allVotes.length).toFixed(2);
   document.getElementById('avgRating').textContent = parseFloat(avg);
 }
 
-function submitRating() {
+async function persistSharedVote(action, payload = {}) {
+  if (!SHARED_RATINGS_API) return false;
+
+  const [title, author] = currentBookKey.split('|');
+  const response = await fetch(SHARED_RATINGS_API, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      action,
+      bookKey: currentBookKey,
+      title,
+      author,
+      ...payload
+    })
+  });
+
+  const result = await response.json();
+  if (!response.ok || !result.ok) {
+    throw new Error(result.error || `Shared save failed with status ${response.status}`);
+  }
+
+  const data = normalizeStoredRatings(result);
+  sharedArchive = data.archive;
+  allVotes = data.currentBookKey === currentBookKey ? data.currentVotes : allVotes;
+  ratingsStorageMode = 'shared';
+  setRatingStatus('Оценки сохраняются для всех участников ✅', true);
+  localStorage.setItem(currentBookKey, JSON.stringify(allVotes));
+
+  return true;
+}
+
+async function submitRating() {
   const nameInput = document.getElementById('nameInput');
+  const submitButton = document.getElementById('submitRating');
   const name = nameInput?.value.trim();
-  
+
   if (!name) {
     alert('Пожалуйста, введите имя');
     return;
   }
-  
+
   if (!currentStarRating) {
     alert('Пожалуйста, выберите оценку');
     return;
   }
-  
-  const existingIndex = allVotes.findIndex(v => v.name.toLowerCase() === name.toLowerCase());
+
+  const existingIndex = allVotes.findIndex(vote => vote.name.toLowerCase() === name.toLowerCase());
   if (existingIndex >= 0) {
     allVotes[existingIndex].rating = currentStarRating;
   } else {
     allVotes.push({
       id: Date.now(),
-      name: name,
+      name,
       rating: currentStarRating
     });
   }
-  
-  localStorage.setItem(currentBookKey, JSON.stringify(allVotes));
+
+  const originalText = submitButton?.textContent;
+  if (submitButton) {
+    submitButton.disabled = true;
+    submitButton.textContent = 'Сохраняю...';
+    submitButton.style.opacity = '0.8';
+  }
+
+  try {
+    await persistSharedVote('upsertVote', { name, rating: currentStarRating });
+  } catch (error) {
+    console.warn('Shared save failed, falling back to local storage:', error);
+    localStorage.setItem(currentBookKey, JSON.stringify(allVotes));
+    ratingsStorageMode = 'local';
+    setRatingStatus('Сервер недоступен — сохранено только в этом браузере.', false);
+  } finally {
+    if (submitButton) {
+      submitButton.disabled = false;
+      submitButton.textContent = originalText;
+      submitButton.style.opacity = '';
+    }
+  }
+
   currentStarRating = 0;
-  nameInput.value = '';
+  if (nameInput) nameInput.value = '';
   updateStarDisplay();
   renderVotes();
 }
 
-function deleteVote(id) {
-  allVotes = allVotes.filter(v => v.id !== id);
-  localStorage.setItem(currentBookKey, JSON.stringify(allVotes));
+async function deleteVote(id) {
+  allVotes = allVotes.filter(vote => vote.id !== id);
+
+  try {
+    await persistSharedVote('deleteVote', { id });
+  } catch (error) {
+    console.warn('Shared delete failed, falling back to local storage:', error);
+    localStorage.setItem(currentBookKey, JSON.stringify(allVotes));
+    ratingsStorageMode = 'local';
+    setRatingStatus('Сервер недоступен — изменение сохранено только локально.', false);
+  }
+
   renderVotes();
 }
 
-// Инициализация при загрузке
 initStars();
 loadCurrentBookData();
 
@@ -2468,24 +2686,34 @@ if (hamburger && navLinks) {
 }
 
 /* CHANGE BOOK FUNCTION */
-function changeCurrentBook(newTitle, newAuthor) {
-  // Архивируем старые оценки
+async function changeCurrentBook(newTitle, newAuthor) {
   archivePreviousBookRating(currentBookKey);
-  
-  // Обновляем текущую книгу
+
   currentBookKey = `${newTitle}|${newAuthor}`;
   lastSavedBookKey = currentBookKey;
-  document.getElementById('currentBookTitle').textContent = newTitle;
-  document.getElementById('currentBookAuthor').textContent = newAuthor;
-  
-  // Загружаем оценки новой книги (или пусто если это новая книга)
-  allVotes = JSON.parse(localStorage.getItem(currentBookKey)) || [];
+
+  document.querySelectorAll('#currentBookTitle').forEach(el => {
+    el.textContent = newTitle;
+  });
+
+  document.querySelectorAll('#currentBookAuthor').forEach((el, index) => {
+    el.textContent = index === 0 ? `by ${newAuthor}` : newAuthor;
+  });
+
   currentStarRating = 0;
   document.getElementById('nameInput').value = '';
-  
-  // Перерисовываем
+
+  try {
+    await persistSharedVote('syncBook');
+  } catch (error) {
+    allVotes = JSON.parse(localStorage.getItem(currentBookKey)) || [];
+  }
+
+  await loadVotesForCurrentBook(newTitle, newAuthor);
   updateStarDisplay();
   renderVotes();
+  renderBooks();
+  renderHistory();
 }
 </script>
 
