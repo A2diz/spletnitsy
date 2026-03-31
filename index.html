@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Сплетницы — Книжный Клуб</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -262,7 +264,7 @@
   .book-card:nth-child(3) { transform: rotate(1deg) translateY(-0.5rem); }
   .book-card:nth-child(4) { transform: rotate(-2deg) translateY(0.5rem); }
 
-  .book-card:hover { transform: rotate(0) scale(1.03) translateY(-4px) !important; z-index: 10; }
+  .book-card:hover { transform: rotate(0) scale(1.03) translateY(-4px); z-index: 10; }
 
   .book-card-title {
     font-family: 'Playfair Display', serif;
@@ -1031,13 +1033,235 @@
     grid-column: 1 / -1;
   }
 
-  
+  /* RATING STYLES */
+  .vote-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.6rem 0;
+    font-size: 0.85rem;
+    color: #5a4a52;
+    border-bottom: 1px solid rgba(26,16,24,0.05);
+  }
+
+  .vote-item:last-child {
+    border-bottom: none;
+  }
+
+  .vote-name-rating {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .vote-name {
+    font-weight: 500;
+    flex: 1;
+    max-width: 80px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .vote-rating {
+    color: var(--rose);
+    font-weight: 600;
+    min-width: 20px;
+  }
+
+  .vote-delete {
+    background: none;
+    border: none;
+    color: #c0a0b0;
+    cursor: pointer;
+    font-size: 1.1rem;
+    padding: 0.2rem 0.4rem;
+    transition: color 0.2s;
+  }
+
+  .vote-delete:hover {
+    color: var(--rose);
+  }
+
+  .star {
+    font-size: 1.3rem;
+    cursor: pointer;
+    transition: transform 0.1s, opacity 0.2s;
+    user-select: none;
+    color: var(--ink);
+    text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  }
+
+  .star:hover {
+    transform: scale(1.2);
+  }
+
+  .star.active {
+    opacity: 1;
+    color: var(--rose);
+  }
+
+  .star.inactive {
+    opacity: 0.4;
+    color: var(--ink);
+  }
+
+  /* PARTICIPANTS STYLES */
+  .participants-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 2.5rem;
+    margin-top: 3rem;
+  }
+
+  .participant-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    transition: transform 0.3s ease;
+  }
+
+  .participant-card:hover {
+    transform: translateY(-8px);
+  }
+
+  .participant-photo {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ffb6c8, #ff6fa8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    font-size: 3.5rem;
+    color: rgba(255, 255, 255, 0.3);
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(232, 64, 122, 0.2);
+    font-family: 'Playfair Display', serif;
+    border: 3px solid white;
+    flex-shrink: 0;
+  }
+
+  .participant-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .participant-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 0.6rem;
+  }
+
+  .participant-desc {
+    font-size: 0.9rem;
+    color: #5a4a52;
+    line-height: 1.5;
+    max-width: 180px;
+  }
+
+  @media (max-width: 768px) {
+    .participants-grid {
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 1.5rem;
+    }
+    .participant-photo {
+      width: 140px;
+      height: 140px;
+      margin-bottom: 1rem;
+      font-size: 2.8rem;
+    }
+    .participant-name {
+      font-size: 1rem;
+    }
+    .participant-desc {
+      font-size: 0.8rem;
+      max-width: 140px;
+    }
+
+    /* RATING MOBILE */
+    #ratingBlock {
+      margin-top: 1.5rem !important;
+      margin-bottom: 2rem !important;
+      padding: 1rem !important;
+    }
+    #ratingBlock .vote-item {
+      font-size: 0.8rem;
+    }
+    #ratingBlock .vote-name-rating {
+      gap: 0.4rem;
+    }
+    #ratingBlock .vote-name {
+      max-width: 60px;
+    }
+    #ratingBlock .vote-rating {
+      font-size: 0.9rem;
+    }
+    #ratingBlock input#nameInput {
+      font-size: 0.8rem;
+      padding: 0.4rem 0.6rem;
+    }
+    #ratingBlock button#submitRating {
+      font-size: 0.8rem !important;
+      padding: 0.4rem 0.8rem !important;
+      white-space: normal !important;
+      min-width: auto !important;
+    }
+    #ratingBlock .star {
+      font-size: 1.1rem;
+    }
+  }
+
+  @media (max-width: 400px) {
+    .participants-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+    .participant-photo {
+      width: 120px;
+      height: 120px;
+      font-size: 2.4rem;
+    }
+  }
 
   @media (max-width: 400px) {
     .presentations-grid { grid-template-columns: 1fr; }
-  }
 
-    /* FOOTER */
+    /* RATING MOBILE */
+    #ratingBlock {
+      margin-top: 1.5rem !important;
+      margin-bottom: 2rem !important;
+      padding: 1rem !important;
+    }
+    #ratingBlock .vote-item {
+      font-size: 0.8rem;
+    }
+    #ratingBlock .vote-name-rating {
+      gap: 0.4rem;
+    }
+    #ratingBlock .vote-name {
+      max-width: 60px;
+    }
+    #ratingBlock .vote-rating {
+      font-size: 0.9rem;
+    }
+    #ratingBlock input#nameInput {
+      font-size: 0.8rem;
+      padding: 0.4rem 0.6rem;
+    }
+    #ratingBlock button#submitRating {
+      font-size: 0.8rem !important;
+      padding: 0.4rem 0.8rem !important;
+      white-space: normal !important;
+      min-width: auto !important;
+    }
+    #ratingBlock .star {
+      font-size: 1.1rem;
+    }
+  }
   footer {
     background: var(--ink);
     color: rgba(255,255,255,0.6);
@@ -1063,6 +1287,9 @@
     font-size: 0.82rem;
     color: var(--blush);
   }
+
+  /* HAMBURGER (hidden on desktop) */
+  .nav-hamburger { display: none; }
 
   /* ANIMATIONS */
   @keyframes float {
@@ -1096,8 +1323,11 @@
     margin-top: 1rem;
   }
 
-  /* MOBILE */
-  rem;
+  /* LIGHTBOX */
+  .lightbox-close {
+    position: absolute;
+    top: 1.2rem;
+    right: 1.5rem;
     color: white;
     font-size: 2rem;
     cursor: pointer;
@@ -1148,25 +1378,80 @@
   .gallery-item { cursor: zoom-in; }
 
 
-  #lightbox { display: none; }
-  #lightbox.active { display: flex !important; }
+  #lightbox {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.92);
+    z-index: 10000;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+  #lightbox.active { display: flex; }
+
+  #lightboxImg {
+    max-width: 90vw;
+    max-height: 85vh;
+    object-fit: contain;
+    border-radius: 4px;
+  }
+
+  #lightboxCounter {
+    color: rgba(255,255,255,0.6);
+    font-size: 0.85rem;
+    margin-top: 1rem;
+  }
 
   @media (max-width: 768px) {
-  /* NAV - two rows on mobile */
+  /* NAV - hamburger on mobile */
     nav {
-      padding: 0.7rem 1.2rem;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 0.5rem;
+      padding: 0.8rem 1.2rem;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
     }
     .nav-logo { font-size: 1.15rem; }
-    .nav-links {
-      gap: 0.6rem;
-      flex-wrap: wrap;
-      width: 100%;
+    .nav-hamburger {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+      z-index: 1001;
     }
-    .nav-links a { font-size: 0.72rem; letter-spacing: 0.03em; white-space: nowrap; }
-    .hero-left { padding-top: 7rem; }
+    .nav-hamburger span {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background: var(--ink);
+      border-radius: 2px;
+      transition: transform 0.3s, opacity 0.3s;
+    }
+    .nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .nav-hamburger.open span:nth-child(2) { opacity: 0; }
+    .nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+    .nav-links {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: rgba(255,240,245,0.98);
+      flex-direction: column;
+      padding: 0.8rem 1.5rem 1.2rem;
+      gap: 0;
+      border-bottom: 1px solid rgba(232,64,122,0.25);
+      backdrop-filter: blur(12px);
+    }
+    .nav-links.open { display: flex; }
+    .nav-links li { padding: 0.7rem 0; border-bottom: 1px solid rgba(232,64,122,0.08); }
+    .nav-links li:last-child { border-bottom: none; }
+    .nav-links a { font-size: 0.9rem; letter-spacing: 0.04em; display: block; }
+    .hero-left { padding-top: 5rem; }
 
     /* HERO */
     .hero { grid-template-columns: 1fr; min-height: auto; }
@@ -1250,68 +1535,12 @@
     .join-perks { gap: 0.5rem; }
 
     /* PRESENTATIONS */
-  .presentations-section {
-    padding: 7rem 5rem;
-    background: #fff0f5;
-  }
-
-  .presentations-desc {
-    font-size: 1rem;
-    color: #5a4a52;
-    line-height: 1.7;
-    max-width: 600px;
-    margin-bottom: 3rem;
-  }
-
-  .presentations-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: 1.5rem;
-  }
-
-  .presentation-card {
-    background: white;
-    border: 1px solid rgba(232,64,122,0.15);
-    border-radius: 8px;
-    padding: 1.8rem;
-    transition: all 0.3s;
-    text-decoration: none;
-    color: var(--ink);
-    display: flex;
-    flex-direction: column;
-    gap: 0.8rem;
-  }
-
-  .presentation-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 16px 40px rgba(232,64,122,0.12);
-    border-color: rgba(232,64,122,0.3);
-  }
-
-
-  .pres-icon { font-size: 2rem; margin-bottom: 0.5rem; }
-  .pres-book { font-size: 0.72rem; color: var(--rose); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.3rem; }
-  .pres-title { font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 700; color: var(--ink); line-height: 1.3; margin-bottom: 0.4rem; }
-  .pres-desc { font-size: 0.8rem; color: #7a6a72; line-height: 1.5; flex: 1; }
-  .pres-meta { display: flex; justify-content: space-between; align-items: center; margin-top: 1rem; padding-top: 0.8rem; border-top: 1px solid rgba(232,64,122,0.1); }
-  .pres-date { font-size: 0.72rem; color: #9a8a92; }
-  .pres-dl { font-size: 0.75rem; color: var(--rose); font-weight: 600; }
-  .presentation-card-icon { font-size: 2rem; }
-  .presentation-card-book { font-family: 'Playfair Display', serif; font-size: 0.95rem; font-weight: 700; line-height: 1.3; }
-  .presentation-card-topic { font-size: 0.82rem; color: #7a6a72; line-height: 1.4; }
-  .presentation-card-author { font-size: 0.75rem; color: var(--rose); font-weight: 500; margin-top: auto; }
-
-  .presentation-placeholder {
-    border: 2px dashed rgba(232,64,122,0.25);
-    border-radius: 8px;
-    padding: 3rem 2rem;
-    text-align: center;
-    color: #c0a0b0;
-    grid-column: 1 / -1;
-  }
-
-  .presentation-placeholder-icon { font-size: 2.5rem; margin-bottom: 1rem; }
-  .presentation-placeholder-text { font-size: 0.9rem; line-height: 1.6; }
+    .presentations-section { padding: 3rem 1.5rem; }
+    .presentations-desc { font-size: 0.9rem; max-width: 100%; margin-bottom: 2rem; }
+    .presentations-grid { grid-template-columns: 1fr 1fr; gap: 0.8rem; }
+    .presentation-card { padding: 1.2rem 1rem; }
+    .pres-title { font-size: 0.85rem; }
+    .pres-desc { font-size: 0.72rem; }
 
   
 
@@ -1382,74 +1611,6 @@
     .nav-links a { font-size: 0.58rem; }
   }
 
-
-  /* MEMBERS */
-  .members-section {
-    padding: 5rem 5rem;
-    background: #fff0f5;
-  }
-  .members-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1.5rem;
-    margin-top: 2.5rem;
-  }
-  .member-card {
-    background: white;
-    border-radius: 16px;
-    padding: 1.5rem 1.2rem;
-    text-align: center;
-    border: 1px solid rgba(232,64,122,0.1);
-    transition: transform 0.2s, box-shadow 0.2s;
-  }
-  .member-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(232,64,122,0.12);
-  }
-  .member-photo {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin: 0 auto 0.8rem;
-    display: block;
-    border: 3px solid rgba(232,64,122,0.2);
-    background: #ffe0ee;
-  }
-  .member-photo-placeholder {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    margin: 0 auto 0.8rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.8rem;
-    background: linear-gradient(135deg, #ffe0ee, #ffb6c8);
-    border: 3px solid rgba(232,64,122,0.2);
-  }
-  .member-name {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: var(--ink);
-    margin-bottom: 0.4rem;
-  }
-  .member-desc {
-    font-size: 0.78rem;
-    color: #7a6a72;
-    line-height: 1.5;
-  }
-  @media (max-width: 768px) {
-    .members-section { padding: 3rem 1.2rem; }
-    .members-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
-    .member-photo, .member-photo-placeholder { width: 64px; height: 64px; }
-    .member-name { font-size: 1rem; }
-  }
-  @media (max-width: 400px) {
-    .members-grid { grid-template-columns: repeat(2, 1fr); }
-  }
-
   /* LIGHTBOX */
     .lightbox-prev { left: 0.5rem; }
     .lightbox-next { right: 0.5rem; }
@@ -1472,7 +1633,7 @@
 </style>
 
 <!-- Netlify Identity Widget -->
-<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+<script src="https://identity.netlify.com/v1/netlify-identity-widget.js" defer></script>
 <script>
   // Handle invite and recovery tokens from email links
   if (window.location.hash && (
@@ -1490,11 +1651,13 @@
 <!-- NAV -->
 <nav>
   <div class="nav-logo">Сплетницы</div>
-  <ul class="nav-links">
+  <button class="nav-hamburger" id="navHamburger" aria-label="Меню" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+  <ul class="nav-links" id="navLinks">
     <li><a href="#about">О клубе</a></li>
     <li><a href="#books">Книги</a></li>
-    <li><a href="#members">Участницы</a></li>
-    <li><a href="#presentations">Презентации</a></li>
+    <li><a href="#participants">Участницы</a></li>
     <li><a href="#schedule">Встречи</a></li>
     <li><a href="#gallery">Галерея</a></li>
     <li><a href="#join">Вступить</a></li>
@@ -1604,8 +1767,35 @@
   <div class="currently-reading reveal">
     <div>
       <div class="current-label">Читаем сейчас</div>
-      <div class="current-title">Внутри секты</div>
-      <div class="current-author">by Михаил Вершинин</div>
+      <div class="current-title" id="currentBookTitle">Внутри секты</div>
+      <div class="current-author" id="currentBookAuthor">by Михаил Вершинин</div>
+    </div>
+  </div>
+
+  <!-- RATING BLOCK -->
+  <div id="ratingBlock" style="margin-top:2rem; margin-bottom:2.5rem; padding:1.5rem; background:linear-gradient(135deg, #ffd6e8, #ffb6c8); border-radius:8px;">
+    <div style="font-size:0.9rem; color:#5a4a52; margin-bottom:1.2rem;">
+      Средняя оценка: <span id="avgRating" style="font-weight:700; color:var(--rose); font-size:1.1rem;">—</span> ★
+    </div>
+    
+    <!-- VOTES LIST -->
+    <div id="votesList" style="margin-bottom:1.5rem; max-height:150px; overflow-y:auto;">
+      <!-- Голоса добавляются JavaScript -->
+    </div>
+    
+    <!-- RATING INPUT -->
+    <div style="background:rgba(255,255,255,0.6); padding:1rem; border-radius:6px; border:1px solid rgba(232,64,122,0.2);">
+      <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.8rem; flex-wrap:wrap;">
+        <span style="font-size:0.85rem; color:#5a4a52; font-weight:500;">Твоя оценка:</span>
+        <div id="starsInput" style="display:flex; gap:0.3rem;">
+          <!-- Звёздочки добавляются JavaScript -->
+        </div>
+      </div>
+      
+      <div style="display:flex; gap:0.6rem; align-items:center;">
+        <input type="text" id="nameInput" placeholder="Имя" style="flex:1; padding:0.5rem 0.8rem; border:1px solid rgba(26,16,24,0.15); border-radius:3px; font-family:'DM Sans',sans-serif; font-size:0.85rem;">
+        <button id="submitRating" onclick="submitRating()" style="background:var(--rose); color:white; border:none; padding:0.5rem 1.2rem; border-radius:3px; cursor:pointer; font-size:0.85rem; font-weight:600; transition:all 0.2s; white-space:nowrap;">Отправить</button>
+      </div>
     </div>
   </div>
 
@@ -1624,123 +1814,13 @@
   <div class="books-pagination" id="booksPagination"></div>
   </div>
 </section>
-<!-- PRESENTATIONS -->
-<section class="presentations-section" id="presentations">
-  <div class="section-tag">Материалы</div>
-  <h2 class="section-title">Наши <em style="color:var(--rose)">презентации</em></h2>
-  <p class="presentations-desc">Каждый месяц одна из участниц готовит презентацию по книге или связанной теме. Здесь мы собираем все наши материалы.</p>
-  <div class="presentations-grid" id="presentationsGrid">
-    <a class="presentation-card" href="#" download="Соловеи_.pptx">
-      <div class="pres-icon">🕊️</div>
-      <div class="pres-book">The Nightingale — Kristin Hannah</div>
-      <div class="pres-title">Соловей</div>
-      <div class="pres-desc">Мнение о книге и важные мысли</div>
-      <div class="pres-meta">
-        <span class="pres-date">Сентябрь 2025</span>
-        <span class="pres-dl">↓ Скачать</span>
-      </div>
-    </a>
-    <a class="presentation-card" href="#" download="Тара_Вестовер_учится_жить_.pptx">
-      <div class="pres-icon">📖</div>
-      <div class="pres-book">Ученица — Tara Westover</div>
-      <div class="pres-title">Тара Вестовер учится жить</div>
-      <div class="pres-desc">Психологические травмы героини</div>
-      <div class="pres-meta">
-        <span class="pres-date">Июнь 2025</span>
-        <span class="pres-dl">↓ Скачать</span>
-      </div>
-    </a>
-    <a class="presentation-card" href="#" download="_Сказки_.pptx">
-      <div class="pres-icon">✨</div>
-      <div class="pres-book">Бабушка велела кланяться — Фредерик Бакман</div>
-      <div class="pres-title">Сказки моего городка</div>
-      <div class="pres-desc">Личные истории участниц клуба</div>
-      <div class="pres-meta">
-        <span class="pres-date">Ноябрь 2023</span>
-        <span class="pres-dl">↓ Скачать</span>
-      </div>
-    </a>
-    <a class="presentation-card" href="#" download="Не_осудим__но_обсудим.pptx">
-      <div class="pres-icon">🎭</div>
-      <div class="pres-book">Скорбь Сатаны</div>
-      <div class="pres-title">Не осудим, но обсудим</div>
-      <div class="pres-desc">Анализ главного героя — Джеффри Темпеста</div>
-      <div class="pres-meta">
-        <span class="pres-date">Январь 2025</span>
-        <span class="pres-dl">↓ Скачать</span>
-      </div>
-    </a>
-    <a class="presentation-card" href="#" download="Несчастныи__случаи__Ребекки.pptx">
-      <div class="pres-icon">🔍</div>
-      <div class="pres-book">Долорес Клейборн — Стивен Кинг</div>
-      <div class="pres-title">Несчастный случай Ребекки</div>
-      <div class="pres-desc">Реальный детективный случай Ребекки Захау</div>
-      <div class="pres-meta">
-        <span class="pres-date">Май 2024</span>
-        <span class="pres-dl">↓ Скачать</span>
-      </div>
-    </a>
-    <a class="presentation-card" href="#" download="Влияние_детства____на_взрослую_жизнь_______.pptx">
-      <div class="pres-icon">👶</div>
-      <div class="pres-book">Tomorrow, and Tomorrow, and Tomorrow</div>
-      <div class="pres-title">Влияние детства на взрослую жизнь</div>
-      <div class="pres-desc">Детские травмы героев романа Габриэль Зевин</div>
-      <div class="pres-meta">
-        <span class="pres-date">Октябрь 2024</span>
-        <span class="pres-dl">↓ Скачать</span>
-      </div>
-    </a>
-  </div>
-</section>
 
-
-
-
-<!-- MEMBERS -->
-<section class="members-section reveal" id="members">
-  <div class="section-tag">Наш клуб</div>
+<!-- PARTICIPANTS -->
+<section id="participants" style="padding: 7rem 5rem; background: linear-gradient(135deg, #ffd6e8 0%, #ffe0ee 100%);">
+  <div class="section-tag">Команда</div>
   <h2 class="section-title">Наши <em style="color:var(--rose)">участницы</em></h2>
-  <div class="members-grid" id="membersGrid">
-    <div class="member-card">
-      <div class="member-photo-placeholder">🌸</div>
-      <div class="member-name">Наташа</div>
-      <div class="member-desc">Главная по выбору книг и уютным пледам</div>
-    </div>
-    <div class="member-card">
-      <div class="member-photo-placeholder">📚</div>
-      <div class="member-name">Даша</div>
-      <div class="member-desc">Читает быстрее всех и успевает обсудить дважды</div>
-    </div>
-    <div class="member-card">
-      <div class="member-photo-placeholder">🔍</div>
-      <div class="member-name">Алиса</div>
-      <div class="member-desc">Знает все спойлеры, но молчит до встречи</div>
-    </div>
-    <div class="member-card">
-      <div class="member-photo-placeholder">🍰</div>
-      <div class="member-name">Лена</div>
-      <div class="member-desc">Приносит самые вкусные закуски на встречи</div>
-    </div>
-    <div class="member-card">
-      <div class="member-photo-placeholder">🎭</div>
-      <div class="member-name">Маша</div>
-      <div class="member-desc">Фанат детективов и неожиданных концовок</div>
-    </div>
-    <div class="member-card">
-      <div class="member-photo-placeholder">😭</div>
-      <div class="member-name">Маруся</div>
-      <div class="member-desc">Ставит 10 из 10 только если плакала</div>
-    </div>
-    <div class="member-card">
-      <div class="member-photo-placeholder">✨</div>
-      <div class="member-name">Лиза</div>
-      <div class="member-desc">Цитирует книги в обычной жизни без предупреждения</div>
-    </div>
-    <div class="member-card">
-      <div class="member-photo-placeholder">📖</div>
-      <div class="member-name">Юля</div>
-      <div class="member-desc">Всегда дочитывает до конца, даже если не нравится</div>
-    </div>
+  <div class="participants-grid" id="participantsGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 2.5rem; margin-top: 3rem;">
+    <!-- Участницы добавляются JavaScript -->
   </div>
 </section>
 
@@ -1751,9 +1831,10 @@
   <div class="schedule-grid">
     <div class="next-meeting reveal">
       <div class="meeting-badge">Читаем сейчас</div>
-      <div class="meeting-title">Внутри секты</div>
-      <div style="font-size:0.85rem; color:#7a6a72;">Михаил Вершинин</div>
-      <div class="meeting-details">
+      <div class="meeting-title" id="currentBookTitle">Внутри секты</div>
+      <div style="font-size:0.85rem; color:#7a6a72;" id="currentBookAuthor">Михаил Вершинин</div>
+      
+      <div class="meeting-details" style="margin-top:1.8rem;">
         <div class="meeting-detail">
           <div class="meeting-detail-icon">📅</div>
           <span>Следующая встреча — 4 апреля</span>
@@ -1947,6 +2028,12 @@ function getRatingColor(r) {
   return 'rgba(255,255,255,0.5)';
 }
 
+function getArchivedRating(bookTitle, bookAuthor) {
+  const archiveKey = `archive_${bookTitle}|${bookAuthor}`;
+  const archived = JSON.parse(localStorage.getItem(archiveKey));
+  return archived ? archived.rating : null;
+}
+
 function historyRatingColor(r) {
   if (!r) return '#c0a0b0';
   if (r >= 9) return '#d4a843';
@@ -1977,18 +2064,24 @@ function renderBooks(filter) {
   const grid = document.getElementById('booksGrid');
   const savedScroll = window.scrollY;
   grid.style.minHeight = grid.offsetHeight + 'px';
-  grid.innerHTML = page.map(b => `
+  grid.innerHTML = page.map(b => {
+    // Проверяем, есть ли архивная оценка для этой книги
+    const archivedRating = getArchivedRating(b.title, b.author);
+    const displayRating = b.rating !== null ? b.rating : archivedRating;
+    
+    return `
     <div class="book-item">
       <div class="book-item-date">${b.date}</div>
       <div class="book-item-title">${b.title}</div>
       <div class="book-item-author">${b.author}</div>
       <div class="rating-bar">
         <div class="rating-track">
-          <div class="rating-fill" style="width:${b.rating ? (b.rating/10*100) : 0}%;background:${getRatingColor(b.rating)}"></div>
+          <div class="rating-fill" style="width:${displayRating ? (displayRating/10*100) : 0}%;background:${getRatingColor(displayRating)}"></div>
         </div>
-        <div class="rating-num" style="color:${getRatingColor(b.rating)}">${b.rating || '—'}</div>
+        <div class="rating-num" style="color:${getRatingColor(displayRating)}">${displayRating || '—'}</div>
       </div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
   requestAnimationFrame(() => {
     grid.style.minHeight = '';
     window.scrollTo({ top: savedScroll, behavior: 'instant' });
@@ -2096,6 +2189,201 @@ function goHistoryPage(p) {
 
 renderHistory();
 
+// ---- CURRENT BOOK RATING SYSTEM ----
+let currentBookKey = 'Внутри секты|Михаил Вершинин';
+let lastSavedBookKey = null;
+let currentStarRating = 0;
+let allVotes = [];
+
+function loadCurrentBookData() {
+  // Загружаем текущую книгу из JSON
+  fetch('/_data/current_book.json')
+    .then(r => r.json())
+    .then(data => {
+      const newBookKey = `${data.title}|${data.author}`;
+      
+      // Если книга изменилась, архивируем старую
+      if (lastSavedBookKey && lastSavedBookKey !== newBookKey) {
+        archivePreviousBookRating(lastSavedBookKey);
+      }
+      
+      lastSavedBookKey = newBookKey;
+      currentBookKey = newBookKey;
+      document.getElementById('currentBookTitle').textContent = data.title;
+      document.getElementById('currentBookAuthor').textContent = data.author;
+      
+      // Загружаем оценки для текущей книги
+      allVotes = JSON.parse(localStorage.getItem(currentBookKey)) || [];
+      currentStarRating = 0;
+      document.getElementById('nameInput').value = '';
+      
+      updateStarDisplay();
+      renderVotes();
+    })
+    .catch(err => console.error('Ошибка загрузки книги:', err));
+}
+
+function archivePreviousBookRating(bookKey) {
+  const votes = JSON.parse(localStorage.getItem(bookKey)) || [];
+  
+  if (votes.length === 0) return;
+  
+  const [title, author] = bookKey.split('|');
+  const avgRating = parseFloat((votes.reduce((sum, v) => sum + v.rating, 0) / votes.length).toFixed(2));
+  
+  // Сохраняем архив
+  const archiveKey = `archive_${bookKey}`;
+  const archivedData = {
+    title: title,
+    author: author,
+    rating: avgRating,
+    voteCount: votes.length,
+    votes: votes,
+    archivedDate: new Date().toISOString()
+  };
+  localStorage.setItem(archiveKey, JSON.stringify(archivedData));
+  
+  // Удаляем текущие оценки (они архивированы)
+  localStorage.removeItem(bookKey);
+  
+  console.log(`📚 Оценки для "${title}" архивированы с рейтингом ${avgRating}`);
+}
+
+function getCurrentBookKey() {
+  return currentBookKey;
+}
+
+// Проверяем обновления JSON каждые 5 секунд (для синхронизации если админ изменит)
+setInterval(loadCurrentBookData, 5000);
+
+function initStars() {
+  const starsDiv = document.getElementById('starsInput');
+  if (!starsDiv) return;
+  starsDiv.innerHTML = '';
+  for (let i = 1; i <= 10; i++) {
+    const star = document.createElement('span');
+    star.className = 'star inactive';
+    star.textContent = '★';
+    star.dataset.value = i;
+    star.addEventListener('click', () => { currentStarRating = i; updateStarDisplay(); });
+    star.addEventListener('mouseover', () => {
+      for (let j = 1; j <= 10; j++) {
+        const s = starsDiv.children[j-1];
+        if (j <= i) s.classList.remove('inactive');
+        else s.classList.add('inactive');
+      }
+    });
+    starsDiv.appendChild(star);
+  }
+  starsDiv.addEventListener('mouseout', updateStarDisplay);
+}
+
+function updateStarDisplay() {
+  const starsDiv = document.getElementById('starsInput');
+  if (!starsDiv) return;
+  for (let i = 1; i <= 10; i++) {
+    const star = starsDiv.children[i-1];
+    if (i <= currentStarRating) star.classList.remove('inactive');
+    else star.classList.add('inactive');
+  }
+}
+
+function renderVotes() {
+  const votesList = document.getElementById('votesList');
+  if (!votesList) return;
+  
+  if (allVotes.length === 0) {
+    votesList.innerHTML = '<div style="font-size:0.85rem; color:#c0a0b0; text-align:center; padding:0.8rem 0;">Оценок пока нет</div>';
+    document.getElementById('avgRating').textContent = '—';
+    return;
+  }
+  
+  allVotes.sort((a, b) => b.rating - a.rating);
+  votesList.innerHTML = allVotes.map(v => `
+    <div class="vote-item">
+      <div class="vote-name-rating">
+        <div class="vote-name">${v.name}</div>
+        <div class="vote-rating">${v.rating}</div>
+      </div>
+      <button class="vote-delete" onclick="deleteVote(${v.id})">✕</button>
+    </div>
+  `).join('');
+  
+  const avg = (allVotes.reduce((sum, v) => sum + v.rating, 0) / allVotes.length).toFixed(2);
+  document.getElementById('avgRating').textContent = parseFloat(avg);
+}
+
+function submitRating() {
+  const nameInput = document.getElementById('nameInput');
+  const name = nameInput?.value.trim();
+  
+  if (!name) {
+    alert('Пожалуйста, введите имя');
+    return;
+  }
+  
+  if (!currentStarRating) {
+    alert('Пожалуйста, выберите оценку');
+    return;
+  }
+  
+  const existingIndex = allVotes.findIndex(v => v.name.toLowerCase() === name.toLowerCase());
+  if (existingIndex >= 0) {
+    allVotes[existingIndex].rating = currentStarRating;
+  } else {
+    allVotes.push({
+      id: Date.now(),
+      name: name,
+      rating: currentStarRating
+    });
+  }
+  
+  localStorage.setItem(currentBookKey, JSON.stringify(allVotes));
+  currentStarRating = 0;
+  nameInput.value = '';
+  updateStarDisplay();
+  renderVotes();
+}
+
+function deleteVote(id) {
+  allVotes = allVotes.filter(v => v.id !== id);
+  localStorage.setItem(currentBookKey, JSON.stringify(allVotes));
+  renderVotes();
+}
+
+// Инициализация при загрузке
+initStars();
+loadCurrentBookData();
+
+// ---- PARTICIPANTS ----
+const participants = [
+  { name: "Наташа", desc: "Обожает романтичные истории и делает отличный чай" },
+  { name: "Даша", desc: "Критик по жизни, всегда находит скрытый смыл" },
+  { name: "Алиса", desc: "Живёт иллюзиями, но книги ей дают реальность" },
+  { name: "Лена", desc: "Помнит каждого персонажа лучше, чем авторы" },
+  { name: "Маха", desc: "Спит на встречах, но все равно пишет отзывы" },
+  { name: "Маруся", desc: "Организатор хаоса и душа компании" },
+  { name: "Лиза", desc: "Фотограф наших встреч и летописец моментов" },
+  { name: "Юля", desc: "Никогда не читает, но всегда самая смешная" }
+];
+
+function renderParticipants() {
+  const grid = document.getElementById('participantsGrid');
+  if (!grid) return;
+  
+  grid.innerHTML = participants.map(p => `
+    <div class="participant-card">
+      <div class="participant-photo">
+        <img src="https://via.placeholder.com/180?text=${p.name.charAt(0)}" alt="${p.name}" loading="lazy" onerror="this.textContent='${p.name.charAt(0)}'">
+      </div>
+      <div class="participant-name">${p.name}</div>
+      <div class="participant-desc">${p.desc}</div>
+    </div>
+  `).join('');
+}
+
+renderParticipants();
+
 // ---- SCROLL REVEAL ----
 const observer = new IntersectionObserver(entries => {
   entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
@@ -2126,7 +2414,7 @@ async function handleSubmit(e) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, contact, format, fav })
     });
-  } catch(err) { console.error(err); }
+  } catch(err) { /* ошибка отправки */ }
   document.getElementById('joinForm').style.display='none';
   document.getElementById('successMsg').style.display='block';
 }
@@ -2159,31 +2447,57 @@ document.addEventListener('keydown', e => {
   if(e.key==='ArrowLeft') shiftLB(-1);
 });
 initLightbox();
+
+/* HAMBURGER MENU */
+const hamburger = document.getElementById('navHamburger');
+const navLinks = document.getElementById('navLinks');
+if (hamburger && navLinks) {
+  hamburger.addEventListener('click', () => {
+    hamburger.classList.toggle('open');
+    navLinks.classList.toggle('open');
+    hamburger.setAttribute('aria-expanded', hamburger.classList.contains('open'));
+  });
+  // Закрываем меню при клике на ссылку
+  navLinks.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+      hamburger.classList.remove('open');
+      navLinks.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', 'false');
+    });
+  });
+}
+
+/* CHANGE BOOK FUNCTION */
+function changeCurrentBook(newTitle, newAuthor) {
+  // Архивируем старые оценки
+  archivePreviousBookRating(currentBookKey);
+  
+  // Обновляем текущую книгу
+  currentBookKey = `${newTitle}|${newAuthor}`;
+  lastSavedBookKey = currentBookKey;
+  document.getElementById('currentBookTitle').textContent = newTitle;
+  document.getElementById('currentBookAuthor').textContent = newAuthor;
+  
+  // Загружаем оценки новой книги (или пусто если это новая книга)
+  allVotes = JSON.parse(localStorage.getItem(currentBookKey)) || [];
+  currentStarRating = 0;
+  document.getElementById('nameInput').value = '';
+  
+  // Перерисовываем
+  updateStarDisplay();
+  renderVotes();
+}
 </script>
 
 
 
 <!-- LIGHTBOX -->
-<div id="lightbox" onclick="closeLightbox(event)" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:10000;align-items:center;justify-content:center;flex-direction:column;">
-  <button onclick="closeLB()" style="position:absolute;top:1.2rem;right:1.5rem;background:none;border:none;color:white;font-size:2rem;cursor:pointer;line-height:1;">×</button>
-  <button onclick="shiftLB(-1)" style="position:absolute;left:1.2rem;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.1);border:none;color:white;font-size:2rem;cursor:pointer;width:3rem;height:3rem;border-radius:50%;display:flex;align-items:center;justify-content:center;">‹</button>
-  <img id="lightboxImg" src="" style="max-width:90vw;max-height:85vh;object-fit:contain;border-radius:4px;">
-  <div id="lightboxCounter" style="color:rgba(255,255,255,0.6);font-size:0.85rem;margin-top:1rem;"></div>
-  <button onclick="shiftLB(1)" style="position:absolute;right:1.2rem;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.1);border:none;color:white;font-size:2rem;cursor:pointer;width:3rem;height:3rem;border-radius:50%;display:flex;align-items:center;justify-content:center;">›</button>
-</div>
-
-</body>
-</html>
-
-
-
-<!-- LIGHTBOX -->
-<div id="lightbox" onclick="closeLightbox(event)" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:10000;align-items:center;justify-content:center;flex-direction:column;">
-  <button onclick="closeLB()" style="position:absolute;top:1.2rem;right:1.5rem;background:none;border:none;color:white;font-size:2rem;cursor:pointer;line-height:1;">×</button>
-  <button onclick="shiftLB(-1)" style="position:absolute;left:1.2rem;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.1);border:none;color:white;font-size:2rem;cursor:pointer;width:3rem;height:3rem;border-radius:50%;display:flex;align-items:center;justify-content:center;">‹</button>
-  <img id="lightboxImg" src="" style="max-width:90vw;max-height:85vh;object-fit:contain;border-radius:4px;">
-  <div id="lightboxCounter" style="color:rgba(255,255,255,0.6);font-size:0.85rem;margin-top:1rem;"></div>
-  <button onclick="shiftLB(1)" style="position:absolute;right:1.2rem;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.1);border:none;color:white;font-size:2rem;cursor:pointer;width:3rem;height:3rem;border-radius:50%;display:flex;align-items:center;justify-content:center;">›</button>
+<div id="lightbox" onclick="closeLightbox(event)">
+  <button onclick="closeLB()" class="lightbox-close">×</button>
+  <button onclick="shiftLB(-1)" class="lightbox-prev">‹</button>
+  <img id="lightboxImg" src="" alt="Фото из галереи">
+  <div id="lightboxCounter"></div>
+  <button onclick="shiftLB(1)" class="lightbox-next">›</button>
 </div>
 
 </body>
