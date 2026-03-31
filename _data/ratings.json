@@ -1,5 +1,11 @@
 {
   "currentBookKey": "Внутри секты|Михаил Вершинин",
-  "currentVotes": [],
+  "currentVotes": [
+    {
+      "id": 1774956815092,
+      "name": "Лена",
+      "rating": 6
+    }
+  ],
   "archive": {}
 }
