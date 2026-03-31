@@ -2206,16 +2206,8 @@ renderHistory();
 const SITE_BASE = window.location.pathname.startsWith('/spletnitsy') ? '/spletnitsy' : '';
 const CURRENT_BOOK_URL = `${SITE_BASE}/_data/current_book.json`;
 const STATIC_RATINGS_URL = `${SITE_BASE}/_data/ratings.json`;
-const SHARED_RATINGS_API = (() => {
-  if (window.RATINGS_API_URL) return window.RATINGS_API_URL;
-
-  try {
-    const savedUrl = localStorage.getItem('ratings_api_url');
-    if (savedUrl) return savedUrl;
-  } catch {}
-
-  return window.location.hostname.endsWith('github.io') ? null : '/.netlify/functions/ratings';
-})();
+const NETLIFY_FUNCTIONS_BASE = 'https://bkspletnitsy.netlify.app/.netlify/functions';
+const SHARED_RATINGS_API = window.RATINGS_API_URL || `${NETLIFY_FUNCTIONS_BASE}/ratings`;
 
 let currentBookKey = 'Внутри секты|Михаил Вершинин';
 let lastSavedBookKey = null;
@@ -2627,7 +2619,7 @@ async function handleSubmit(e) {
   else { document.getElementById('err-gdpr').style.display='none'; }
   if (!valid) return;
   try {
-    await fetch('/.netlify/functions/send', {
+    await fetch(`${NETLIFY_FUNCTIONS_BASE}/send`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, contact, format, fav })
