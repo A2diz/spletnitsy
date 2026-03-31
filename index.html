@@ -1642,7 +1642,12 @@
     window.location.hash.indexOf('confirmation_token') > -1
   )) {
     // Redirect to admin page where the identity widget can handle the token
-    window.location.href = '/admin/index.html' + window.location.hash;
+    const isGitHubPages = window.location.hostname.endsWith('github.io');
+    const siteBase = isGitHubPages
+      ? `/${window.location.pathname.split('/').filter(Boolean)[0] || ''}`.replace(/\/$/, '')
+      : '';
+
+    window.location.href = `${siteBase}/admin/index.html${window.location.hash}`;
   }
 </script>
 </head>
@@ -2040,7 +2045,7 @@ function getArchivedRating(bookTitle, bookAuthor) {
   }
 
   const archiveKey = `archive_${bookKey}`;
-  const archived = JSON.parse(localStorage.getItem(archiveKey));
+  const archived = readJsonFromStorage(archiveKey, null);
   return archived ? archived.rating : null;
 }
 
@@ -2203,7 +2208,9 @@ function goHistoryPage(p) {
 renderHistory();
 
 // ---- CURRENT BOOK RATING SYSTEM ----
-const SITE_BASE = window.location.pathname.startsWith('/spletnitsy') ? '/spletnitsy' : '';
+const SITE_BASE = window.location.hostname.endsWith('github.io')
+  ? `/${window.location.pathname.split('/').filter(Boolean)[0] || ''}`.replace(/\/$/, '')
+  : '';
 const CURRENT_BOOK_URL = `${SITE_BASE}/_data/current_book.json`;
 const STATIC_RATINGS_URL = `${SITE_BASE}/_data/ratings.json`;
 const NETLIFY_FUNCTIONS_BASE = 'https://bkspletnitsy.netlify.app/.netlify/functions';
@@ -2224,6 +2231,20 @@ function escapeHtml(value = '') {
   const div = document.createElement('div');
   div.textContent = value;
   return div.innerHTML;
+}
+
+function readJsonFromStorage(key, fallback = null) {
+  try {
+    const raw = localStorage.getItem(key);
+    if (!raw) return fallback;
+    return JSON.parse(raw);
+  } catch (error) {
+    console.warn(`Invalid localStorage value for "${key}", resetting it.`, error);
+    try {
+      localStorage.removeItem(key);
+    } catch {}
+    return fallback;
+  }
 }
 
 function setRatingStatus(message, isShared = false) {
@@ -2310,7 +2331,7 @@ async function loadVotesForCurrentBook(title, author) {
     console.warn('Static shared ratings unavailable:', error);
   }
 
-  allVotes = JSON.parse(localStorage.getItem(currentBookKey)) || [];
+  allVotes = readJsonFromStorage(currentBookKey, []);
   ratingsStorageMode = 'local';
 
   if (window.location.hostname.endsWith('github.io')) {
@@ -2367,7 +2388,7 @@ async function loadCurrentBookData() {
 }
 
 function archivePreviousBookRating(bookKey) {
-  const votes = JSON.parse(localStorage.getItem(bookKey)) || [];
+  const votes = readJsonFromStorage(bookKey, []);
 
   if (votes.length === 0) return;
 
@@ -2563,7 +2584,14 @@ async function deleteVote(id) {
 }
 
 initStars();
-loadCurrentBookData();
+loadCurrentBookData().catch(error => {
+  console.warn('Current book initialization failed:', error);
+  allVotes = readJsonFromStorage(currentBookKey, []);
+  ratingsStorageMode = 'local';
+  setRatingStatus('Не удалось загрузить оценки — обновите страницу.', false);
+  updateStarDisplay();
+  renderVotes();
+});
 
 // ---- PARTICIPANTS ----
 const participants = [
@@ -2698,7 +2726,7 @@ async function changeCurrentBook(newTitle, newAuthor) {
   try {
     await persistSharedVote('syncBook');
   } catch (error) {
-    allVotes = JSON.parse(localStorage.getItem(currentBookKey)) || [];
+    allVotes = readJsonFromStorage(currentBookKey, []);
   }
 
   await loadVotesForCurrentBook(newTitle, newAuthor);
