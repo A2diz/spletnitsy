@@ -1,5 +1,11 @@
 {
   "currentBookKey": "Жажда жизни|Ирвинг Стоун",
-  "currentVotes": [],
+  "currentVotes": [
+    {
+      "id": 1777465384585,
+      "name": "Лена Гог",
+      "rating": 7
+    }
+  ],
   "archive": {}
 }
