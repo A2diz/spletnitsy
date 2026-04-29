@@ -1680,7 +1680,7 @@
     </div>
     <div class="hero-stats">
       <div>
-        <div class="stat-num" id="bookCountStat">31</div>
+        <div class="stat-num" id="bookCountStat">32</div>
         <div class="stat-label">книг прочли</div>
       </div>
       <div>
@@ -1765,14 +1765,14 @@
 <section class="books-section" id="books">
   <div class="section-tag">Наши книги</div>
   <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:2.5rem; flex-wrap:wrap; gap:1rem;">
-    <h2 class="section-title" style="margin-bottom:0;">32 книги</h2>
+    <h2 class="section-title" style="margin-bottom:0;">33 книги</h2>
   </div>
 
   <div class="currently-reading reveal">
     <div>
       <div class="current-label">Читаем сейчас</div>
-      <div class="current-title" id="currentBookTitle">Внутри секты</div>
-      <div class="current-author" id="currentBookAuthor">by Михаил Вершинин</div>
+      <div class="current-title" id="currentBookTitle">Жажда жизни</div>
+      <div class="current-author" id="currentBookAuthor">by Ирвинг Стоун</div>
     </div>
   </div>
 
@@ -1829,13 +1829,13 @@
   <div class="schedule-grid">
     <div class="next-meeting reveal">
       <div class="meeting-badge">Читаем сейчас</div>
-      <div class="meeting-title" id="currentBookTitle">Внутри секты</div>
-      <div style="font-size:0.85rem; color:#7a6a72;" id="currentBookAuthor">Михаил Вершинин</div>
+      <div class="meeting-title" id="currentBookTitle">Жажда жизни</div>
+      <div style="font-size:0.85rem; color:#7a6a72;" id="currentBookAuthor">Ирвинг Стоун</div>
       
       <div class="meeting-details" style="margin-top:1.8rem;">
         <div class="meeting-detail">
           <div class="meeting-detail-icon">📅</div>
-          <span>Следующая встреча — 4 апреля</span>
+          <span>Следующая встреча — 9 мая</span>
         </div>
         <div class="meeting-detail">
           <div class="meeting-detail-icon">📍</div>
@@ -2019,7 +2019,7 @@ const books = [
   { title: "Rock Paper Scissors", author: "Alice Feeney", rating: 6.33, year: 2023, date: "Июл 2023" },
 ];
 
-let currentBookKey = 'Внутри секты|Михаил Вершинин';
+let currentBookKey = 'Жажда жизни|Ирвинг Стоун';
 let lastSavedBookKey = null;
 let currentStarRating = 0;
 let allVotes = [];
@@ -2058,9 +2058,20 @@ const BOOKS_PER_PAGE = 10;
 let currentFilter = 'all';
 let currentBooksPage = 1;
 
+function getBookRating(b) {
+  const archivedRating = getArchivedRating(b.title, b.author);
+  return b.rating !== null && b.rating !== undefined ? b.rating : archivedRating;
+}
+
 function getFilteredBooks() {
-  if (currentFilter === 'high') return books.filter(b => b.rating && b.rating >= 8);
-  if (currentFilter === 'low') return books.filter(b => b.rating && b.rating < 5);
+  if (currentFilter === 'high') return books.filter(b => {
+    const rating = getBookRating(b);
+    return rating !== null && rating !== undefined && rating >= 8;
+  });
+  if (currentFilter === 'low') return books.filter(b => {
+    const rating = getBookRating(b);
+    return rating !== null && rating !== undefined && rating < 5;
+  });
   if (['2026','2025','2024','2023'].includes(currentFilter)) return books.filter(b => b.year == currentFilter);
   return books;
 }
@@ -2137,6 +2148,7 @@ const HISTORY_PER_PAGE = 6;
 let currentHistoryPage = 1;
 
 const historyData = [
+  { date: "Апрель 2026", title: "Внутри секты", author: "Михаил Вершинин", rating: null },
   { date: "Март 2026", title: "Камера обскура", author: "Владимир Набоков", rating: 9.0 },
   { date: "Январь 2026", title: "В канун Рождества", author: "Розамунда Пилчер", rating: 1.67 },
   { date: "Декабрь 2025", title: "The Unquiet Bones", author: "Loreth Anne White", rating: 7.6 },
@@ -2335,8 +2347,8 @@ async function loadCurrentBookData() {
   const titleElements = document.querySelectorAll('#currentBookTitle');
   const authorElements = document.querySelectorAll('#currentBookAuthor');
 
-  let title = titleElements[0]?.textContent?.trim() || 'Внутри секты';
-  let author = normalizeAuthorText(authorElements[0]?.textContent || 'Михаил Вершинин');
+  let title = titleElements[0]?.textContent?.trim() || 'Жажда жизни';
+  let author = normalizeAuthorText(authorElements[0]?.textContent || 'Ирвинг Стоун');
 
   try {
     const response = await fetch(`${CURRENT_BOOK_URL}?t=${Date.now()}`, { cache: 'no-store' });
