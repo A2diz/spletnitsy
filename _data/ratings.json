@@ -1,6 +1,12 @@
 {
   "currentBookKey": "Жажда жизни|Ирвинг Стоун",
-  "currentVotes": [],
+  "currentVotes": [
+    {
+      "id": 1778304105197,
+      "name": "Лена",
+      "rating": 6
+    }
+  ],
   "archive": {
     "Жажда жизни|Ирвинг Стоун": {
       "title": "Жажда жизни",
