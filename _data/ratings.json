@@ -1,6 +1,12 @@
 {
   "currentBookKey": "Внучка|Бернхард Шлинк",
-  "currentVotes": [],
+  "currentVotes": [
+    {
+      "id": 1780566945980,
+      "name": "Лена",
+      "rating": 7
+    }
+  ],
   "archive": {
     "Жажда жизни|Ирвинг Стоун": {
       "title": "Жажда жизни",
