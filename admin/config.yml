@@ -1,0 +1,34 @@
+backend:
+  name: github
+  repo: A2diz/spletnitsy
+  branch: main
+
+locale: ru
+
+media_folder: "images"
+public_folder: "/images"
+
+collections:
+  - name: "settings"
+    label: "⚙️ Настройки сайта"
+    files:
+      - name: "current_book"
+        label: "📖 Текущая книга"
+        file: "_data/current_book.json"
+        fields:
+          - { label: "Название книги", name: "title", widget: "string" }
+          - { label: "Автор", name: "author", widget: "string" }
+          - { label: "Дата встречи", name: "meeting_date", widget: "string" }
+
+  - name: "books"
+    label: "📚 Книги клуба"
+    folder: "_data/books"
+    create: true
+    slug: "{{year}}-{{title}}"
+    label_singular: "Книга"
+    fields:
+      - { label: "Название", name: "title", widget: "string" }
+      - { label: "Автор", name: "author", widget: "string" }
+      - { label: "Оценка (1-10)", name: "rating", widget: "number", value_type: "float", required: false }
+      - { label: "Год", name: "year", widget: "number", value_type: "int" }
+      - { label: "Месяц (напр: Янв 2026)", name: "date", widget: "string" }
