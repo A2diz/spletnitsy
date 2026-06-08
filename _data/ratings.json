@@ -1,6 +1,12 @@
 {
-  "currentBookKey": "Волшебная Гора|Томас Манн",
-  "currentVotes": [],
+  "currentBookKey": "Внучка|Бернхард Шлинк",
+  "currentVotes": [
+    {
+      "id": 1780897720867,
+      "name": "маха",
+      "rating": 9
+    }
+  ],
   "archive": {
     "Жажда жизни|Ирвинг Стоун": {
       "title": "Жажда жизни",
