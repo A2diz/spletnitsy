@@ -1680,7 +1680,7 @@
     </div>
     <div class="hero-stats">
       <div>
-        <div class="stat-num" id="bookCountStat">33</div>
+        <div class="stat-num" id="bookCountStat">34</div>
         <div class="stat-label">книг прочли</div>
       </div>
       <div>
@@ -1765,14 +1765,14 @@
 <section class="books-section" id="books">
   <div class="section-tag">Наши книги</div>
   <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:2.5rem; flex-wrap:wrap; gap:1rem;">
-    <h2 class="section-title" style="margin-bottom:0;">34 книги</h2>
+    <h2 class="section-title" style="margin-bottom:0;">35 книги</h2>
   </div>
 
   <div class="currently-reading reveal">
     <div>
       <div class="current-label">Читаем сейчас</div>
-      <div class="current-title" id="currentBookTitle">Внучка</div>
-      <div class="current-author" id="currentBookAuthor">by Бернхард Шлинк</div>
+      <div class="current-title" id="currentBookTitle">Волшебная Гора</div>
+      <div class="current-author" id="currentBookAuthor">by Томас Манн</div>
     </div>
   </div>
 
@@ -1829,13 +1829,13 @@
   <div class="schedule-grid">
     <div class="next-meeting reveal">
       <div class="meeting-badge">Читаем сейчас</div>
-      <div class="meeting-title" id="currentBookTitle">Внучка</div>
-      <div style="font-size:0.85rem; color:#7a6a72;" id="currentBookAuthor">Бернхард Шлинк</div>
+      <div class="meeting-title" id="currentBookTitle">Волшебная Гора</div>
+      <div style="font-size:0.85rem; color:#7a6a72;" id="currentBookAuthor">Томас Манн</div>
       
       <div class="meeting-details" style="margin-top:1.8rem;">
         <div class="meeting-detail">
           <div class="meeting-detail-icon">📅</div>
-          <span>Следующая встреча — 6 июня</span>
+          <span>Следующая встреча — 11 июля 2026</span>
         </div>
         <div class="meeting-detail">
           <div class="meeting-detail-icon">📍</div>
@@ -1985,6 +1985,7 @@
 
 <script>
 const books = [
+  { title: "Внучка", author: "Бернхард Шлинк", rating: 8.86, year: 2026, date: "Июнь 2026" },
   { title: "Жажда жизни", author: "Ирвинг Стоун", rating: 5.71, year: 2026, date: "Май 2026" },
   { title: "Внутри секты", author: "Михаил Вершинин", rating: 4.5, year: 2026, date: "Апр 2026" },
   { title: "Камера обскура", author: "Владимир Набоков", rating: 9.0, year: 2026, date: "Мар 2026" },
@@ -2020,7 +2021,7 @@ const books = [
   { title: "Rock Paper Scissors", author: "Alice Feeney", rating: 6.33, year: 2023, date: "Июл 2023" },
 ];
 
-let currentBookKey = 'Внучка|Бернхард Шлинк';
+let currentBookKey = 'Волшебная Гора|Томас Манн';
 let lastSavedBookKey = null;
 let currentStarRating = 0;
 let allVotes = [];
@@ -2149,6 +2150,8 @@ const HISTORY_PER_PAGE = 6;
 let currentHistoryPage = 1;
 
 const historyData = [
+  { date: "Июнь 2026", title: "Внучка", author: "Бернхард Шлинк", rating: 8.86 },
+  { date: "Май 2026", title: "Жажда жизни", author: "Ирвинг Стоун", rating: 5.71 },
   { date: "Апрель 2026", title: "Внутри секты", author: "Михаил Вершинин", rating: 4.5 },
   { date: "Март 2026", title: "Камера обскура", author: "Владимир Набоков", rating: 9.0 },
   { date: "Январь 2026", title: "В канун Рождества", author: "Розамунда Пилчер", rating: 1.67 },
@@ -2366,8 +2369,8 @@ async function loadCurrentBookData() {
   const titleElements = document.querySelectorAll('#currentBookTitle');
   const authorElements = document.querySelectorAll('#currentBookAuthor');
 
-  let title = titleElements[0]?.textContent?.trim() || 'Жажда жизни';
-  let author = normalizeAuthorText(authorElements[0]?.textContent || 'Ирвинг Стоун');
+  let title = titleElements[0]?.textContent?.trim() || 'Волшебная Гора';
+  let author = normalizeAuthorText(authorElements[0]?.textContent || 'Томас Манн');
 
   try {
     const response = await fetch(`${CURRENT_BOOK_URL}?t=${Date.now()}`, { cache: 'no-store' });
