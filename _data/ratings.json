@@ -1,12 +1,6 @@
 {
-  "currentBookKey": "Волшебная Гора|Томас Манн",
-  "currentVotes": [
-    {
-      "id": 1785077341416,
-      "name": "Lena",
-      "rating": 4
-    }
-  ],
+  "currentBookKey": "Внутри секты|Михаил Вершинин",
+  "currentVotes": [],
   "archive": {
     "Жажда жизни|Ирвинг Стоун": {
       "title": "Жажда жизни",
@@ -63,16 +57,16 @@
     "Волшебная Гора|Томас Манн": {
       "title": "Волшебная Гора",
       "author": "Томас Манн",
-      "rating": 5,
+      "rating": 4,
       "voteCount": 1,
       "votes": [
         {
-          "id": 1783957829660,
-          "name": "наташа",
-          "rating": 5
+          "id": 1785077341416,
+          "name": "Lena",
+          "rating": 4
         }
       ],
-      "archivedDate": "2026-07-13T15:51:08.402Z"
+      "archivedDate": "2026-07-26T14:50:12.444Z"
     }
   }
 }
