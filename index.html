@@ -1680,7 +1680,7 @@
     </div>
     <div class="hero-stats">
       <div>
-        <div class="stat-num" id="bookCountStat">34</div>
+        <div class="stat-num" id="bookCountStat">35</div>
         <div class="stat-label">книг прочли</div>
       </div>
       <div>
@@ -1769,10 +1769,16 @@
   </div>
 
   <div class="currently-reading reveal">
-    <div>
+    <div style="display:flex; flex-direction:column; gap:0.8rem;">
       <div class="current-label">Читаем сейчас</div>
-      <div class="current-title" id="currentBookTitle">Волшебная Гора</div>
-      <div class="current-author" id="currentBookAuthor">by Томас Манн</div>
+      <div>
+        <div class="current-title" id="currentBookTitle">Выход 8</div>
+        <div class="current-author" id="currentBookAuthor">by Гэнки Кавамура</div>
+      </div>
+      <div>
+        <div class="current-title" id="currentBookTitleSecondary">Океан на двоих</div>
+        <div class="current-author" id="currentBookAuthorSecondary">by Вирджини Гримальди</div>
+      </div>
     </div>
   </div>
 
@@ -1829,13 +1835,17 @@
   <div class="schedule-grid">
     <div class="next-meeting reveal">
       <div class="meeting-badge">Читаем сейчас</div>
-      <div class="meeting-title" id="currentBookTitle">Волшебная Гора</div>
-      <div style="font-size:0.85rem; color:#7a6a72;" id="currentBookAuthor">Томас Манн</div>
+      <div style="display:flex; flex-direction:column; gap:0.7rem;">
+        <div class="meeting-title" id="currentBookTitle">Выход 8</div>
+        <div style="font-size:0.85rem; color:#7a6a72;" id="currentBookAuthor">Гэнки Кавамура</div>
+        <div class="meeting-title" id="currentBookTitleSecondary">Океан на двоих</div>
+        <div style="font-size:0.85rem; color:#7a6a72;" id="currentBookAuthorSecondary">Вирджини Гримальди</div>
+      </div>
       
       <div class="meeting-details" style="margin-top:1.8rem;">
         <div class="meeting-detail">
           <div class="meeting-detail-icon">📅</div>
-          <span>Следующая встреча — 26 июля 2026</span>
+          <span>Следующая встреча — 23 августа 2026</span>
         </div>
         <div class="meeting-detail">
           <div class="meeting-detail-icon">📍</div>
@@ -1985,6 +1995,7 @@
 
 <script>
 const books = [
+  { title: "Волшебная Гора", author: "Томас Манн", rating: 4.5, year: 2026, date: "Авг 2026" },
   { title: "Внучка", author: "Бернхард Шлинк", rating: 8.6, year: 2026, date: "Июнь 2026" },
   { title: "Жажда жизни", author: "Ирвинг Стоун", rating: 5.71, year: 2026, date: "Май 2026" },
   { title: "Внутри секты", author: "Михаил Вершинин", rating: 4.5, year: 2026, date: "Апр 2026" },
@@ -2021,7 +2032,7 @@ const books = [
   { title: "Rock Paper Scissors", author: "Alice Feeney", rating: 6.33, year: 2023, date: "Июл 2023" },
 ];
 
-let currentBookKey = 'Волшебная Гора|Томас Манн';
+let currentBookKey = 'Выход 8|Гэнки Кавамура';
 let lastSavedBookKey = null;
 let currentStarRating = 0;
 let allVotes = [];
@@ -2368,17 +2379,30 @@ async function loadVotesForCurrentBook(title, author) {
 async function loadCurrentBookData() {
   const titleElements = document.querySelectorAll('#currentBookTitle');
   const authorElements = document.querySelectorAll('#currentBookAuthor');
+  const secondaryTitleElements = document.querySelectorAll('#currentBookTitleSecondary');
+  const secondaryAuthorElements = document.querySelectorAll('#currentBookAuthorSecondary');
 
-  let title = titleElements[0]?.textContent?.trim() || 'Волшебная Гора';
-  let author = normalizeAuthorText(authorElements[0]?.textContent || 'Томас Манн');
+  let title = titleElements[0]?.textContent?.trim() || 'Выход 8';
+  let author = normalizeAuthorText(authorElements[0]?.textContent || 'Гэнки Кавамура');
+  let secondaryTitle = secondaryTitleElements[0]?.textContent?.trim() || 'Океан на двоих';
+  let secondaryAuthor = normalizeAuthorText(secondaryAuthorElements[0]?.textContent || 'Вирджини Гримальди');
 
   try {
     const response = await fetch(`${CURRENT_BOOK_URL}?t=${Date.now()}`, { cache: 'no-store' });
     if (!response.ok) throw new Error(`Current book returned ${response.status}`);
 
     const data = await response.json();
-    title = data.title?.trim() || title;
-    author = data.author?.trim() || author;
+    const currentBooks = Array.isArray(data.current_books) && data.current_books.length > 0
+      ? data.current_books
+      : [{ title: data.title?.trim() || title, author: data.author?.trim() || author }];
+
+    const primaryBook = currentBooks[0] || { title, author };
+    const secondaryBook = currentBooks[1] || null;
+
+    title = primaryBook.title?.trim() || title;
+    author = primaryBook.author?.trim() || author;
+    secondaryTitle = secondaryBook?.title?.trim() || secondaryTitle;
+    secondaryAuthor = secondaryBook?.author?.trim() || secondaryAuthor;
   } catch (error) {
     console.warn('Could not load current_book.json, using values from the page:', error);
   }
@@ -2403,6 +2427,14 @@ async function loadCurrentBookData() {
 
   authorElements.forEach((el, index) => {
     el.textContent = index === 0 ? `by ${author}` : author;
+  });
+
+  secondaryTitleElements.forEach(el => {
+    el.textContent = secondaryTitle;
+  });
+
+  secondaryAuthorElements.forEach((el, index) => {
+    el.textContent = index === 0 ? `by ${secondaryAuthor}` : secondaryAuthor;
   });
 
   currentStarRating = 0;
