@@ -1680,7 +1680,7 @@
     </div>
     <div class="hero-stats">
       <div>
-        <div class="stat-num" id="bookCountStat">37</div>
+        <div class="stat-num" id="bookCountStat">39</div>
         <div class="stat-label">книг прочли</div>
       </div>
       <div>
@@ -1765,19 +1765,15 @@
 <section class="books-section" id="books">
   <div class="section-tag">Наши книги</div>
   <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:2.5rem; flex-wrap:wrap; gap:1rem;">
-    <h2 class="section-title" style="margin-bottom:0;">37 книги</h2>
+    <h2 class="section-title" style="margin-bottom:0;">39 книг</h2>
   </div>
 
   <div class="currently-reading reveal">
     <div style="display:flex; flex-direction:column; gap:0.8rem;">
       <div class="current-label">Читаем сейчас</div>
       <div>
-        <div class="current-title" id="currentBookTitle">Выход 8</div>
-        <div class="current-author" id="currentBookAuthor">by Гэнки Кавамура</div>
-      </div>
-      <div>
-        <div class="current-title" id="currentBookTitleSecondary">Океан на двоих</div>
-        <div class="current-author" id="currentBookAuthorSecondary">by Вирджини Гримальди</div>
+        <div class="current-title" id="currentBookTitle">Плаха</div>
+        <div class="current-author" id="currentBookAuthor">by Чингиз Айтматов</div>
       </div>
     </div>
   </div>
@@ -1836,16 +1832,14 @@
     <div class="next-meeting reveal">
       <div class="meeting-badge">Читаем сейчас</div>
       <div style="display:flex; flex-direction:column; gap:0.7rem;">
-        <div class="meeting-title" id="currentBookTitle">Выход 8</div>
-        <div style="font-size:0.85rem; color:#7a6a72;" id="currentBookAuthor">Гэнки Кавамура</div>
-        <div class="meeting-title" id="currentBookTitleSecondary">Океан на двоих</div>
-        <div style="font-size:0.85rem; color:#7a6a72;" id="currentBookAuthorSecondary">Вирджини Гримальди</div>
+        <div class="meeting-title" id="currentBookTitle">Плаха</div>
+        <div style="font-size:0.85rem; color:#7a6a72;" id="currentBookAuthor">Чингиз Айтматов</div>
       </div>
       
       <div class="meeting-details" style="margin-top:1.8rem;">
         <div class="meeting-detail">
           <div class="meeting-detail-icon">📅</div>
-          <span>Следующая встреча — 23 августа 2026</span>
+          <span>Следующая встреча — 26 сентября 2026</span>
         </div>
         <div class="meeting-detail">
           <div class="meeting-detail-icon">📍</div>
@@ -1990,6 +1984,8 @@
 
 <script>
 const books = [
+  { title: "Выход 8", author: "Гэнки Кавамура", rating: 4, year: 2026, date: "Авг 2026" },
+  { title: "Океан на двоих", author: "Вирджини Гримальди", rating: 7, year: 2026, date: "Авг 2026" },
   { title: "Волшебная Гора", author: "Томас Манн", rating: 4.5, year: 2026, date: "Авг 2026" },
   { title: "Внучка", author: "Бернхард Шлинк", rating: 8.6, year: 2026, date: "Июнь 2026" },
   { title: "Жажда жизни", author: "Ирвинг Стоун", rating: 5.71, year: 2026, date: "Май 2026" },
@@ -2027,7 +2023,7 @@ const books = [
   { title: "Rock Paper Scissors", author: "Alice Feeney", rating: 6.33, year: 2023, date: "Июл 2023" },
 ];
 
-let currentBookKey = 'Выход 8|Гэнки Кавамура';
+let currentBookKey = 'Плаха|Чингиз Айтматов';
 let lastSavedBookKey = null;
 let currentStarRating = 0;
 let allVotes = [];
@@ -2156,6 +2152,8 @@ const HISTORY_PER_PAGE = 6;
 let currentHistoryPage = 1;
 
 const historyData = [
+  { date: "Август 2026", title: "Выход 8", author: "Гэнки Кавамура", rating: 4 },
+  { date: "Август 2026", title: "Океан на двоих", author: "Вирджини Гримальди", rating: 7 },
   { date: "Июль 2026", title: "Волшебная Гора", author: "Томас Манн", rating: 4.5 },
   { date: "Июнь 2026", title: "Внучка", author: "Бернхард Шлинк", rating: 8.6 },
   { date: "Май 2026", title: "Жажда жизни", author: "Ирвинг Стоун", rating: 5.71 },
