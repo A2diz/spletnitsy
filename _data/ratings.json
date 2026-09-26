@@ -1,6 +1,12 @@
 {
   "currentBookKey": "Плаха|Чингиз Айтматов",
-  "currentVotes": [],
+  "currentVotes": [
+    {
+      "id": 1790419375902,
+      "name": "Ксения",
+      "rating": 4
+    }
+  ],
   "archive": {
     "Выход 8|Гэнки Кавамура": {
       "title": "Выход 8",
