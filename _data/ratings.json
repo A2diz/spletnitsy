@@ -1,6 +1,12 @@
 {
   "currentBookKey": "Письма смерти|Чжоу Хаохуэй",
-  "currentVotes": [],
+  "currentVotes": [
+    {
+      "id": 1790769258664,
+      "name": "лена",
+      "rating": 1
+    }
+  ],
   "archive": {
     "Плаха|Чингиз Айтматов": {
       "title": "Плаха",
