@@ -159,24 +159,63 @@ function syncBookState(state, bookKey, title, author) {
   return nextState;
 }
 
-async function saveWithRetry(state, sha, message, retryCount = 1) {
-  try {
-    await writeState(state, sha, message);
-    return true;
-  } catch (error) {
-    if (retryCount <= 0 || !String(error.message).includes('409')) {
-      throw error;
+async function saveWithRetry(state, sha, message, rebuildState, retryCount = 6) {
+  let nextState = state;
+  let nextSha = sha;
+
+  for (let attempt = 0; ; attempt += 1) {
+    try {
+      await writeState(nextState, nextSha, message);
+      return nextState;
+    } catch (error) {
+      if (attempt >= retryCount || !String(error.message).includes('409')) {
+        throw error;
+      }
+
+      const delay = 80 * (2 ** attempt) + Math.floor(Math.random() * 100);
+      await new Promise(resolve => setTimeout(resolve, delay));
+
+      const latest = await readState();
+      nextState = rebuildState(latest.data);
+      nextSha = latest.sha;
+    }
+  }
+}
+
+function applyVoteAction(state, action, { bookKey, name, rating, id }) {
+  if (action === 'upsertVote') {
+    const trimmedName = String(name).trim();
+    const numericRating = Number(rating);
+
+    if (!trimmedName) {
+      throw new Error('Name is required');
     }
 
-    const latest = await readState();
-    const merged = normalizeState(latest.data);
-    merged.currentBookKey = state.currentBookKey;
-    merged.currentVotes = state.currentVotes;
-    merged.archive = state.archive;
+    if (!Number.isFinite(numericRating) || numericRating < 1 || numericRating > 10) {
+      throw new Error('Rating must be between 1 and 10');
+    }
 
-    await writeState(merged, latest.sha, message);
-    return true;
+    const existingIndex = state.currentVotes.findIndex(
+      vote => String(vote.name).trim().toLowerCase() === trimmedName.toLowerCase()
+    );
+    const nextVote = {
+      id: existingIndex >= 0 ? state.currentVotes[existingIndex].id : Date.now(),
+      name: trimmedName,
+      rating: numericRating
+    };
+
+    if (existingIndex >= 0) {
+      state.currentVotes[existingIndex] = nextVote;
+    } else {
+      state.currentVotes.push(nextVote);
+    }
+  } else if (action === 'deleteVote') {
+    state.currentVotes = state.currentVotes.filter(vote => String(vote.id) !== String(id));
+  } else if (action !== 'syncBook') {
+    throw new Error('Unknown action');
   }
+
+  return state;
 }
 
 exports.handler = async function(event) {
@@ -195,14 +234,19 @@ exports.handler = async function(event) {
       const normalized = normalizeState(data);
       const synced = syncBookState(normalized, bookKey, title, author);
 
-      if (writable && JSON.stringify(synced) !== JSON.stringify(normalized)) {
-        await saveWithRetry(synced, sha, `Sync ratings state for ${title || 'current book'}`);
-      }
+      const finalState = writable && JSON.stringify(synced) !== JSON.stringify(normalized)
+        ? await saveWithRetry(
+          synced,
+          sha,
+          `Sync ratings state for ${title || 'current book'}`,
+          latestData => syncBookState(latestData, bookKey, title, author)
+        )
+        : synced;
 
       return buildResponse(200, {
         ok: true,
         storage: writable ? 'shared' : 'readonly',
-        ...synced
+        ...finalState
       });
     }
 
@@ -239,47 +283,28 @@ exports.handler = async function(event) {
       });
     }
 
-    const state = syncBookState(current.data, bookKey, title, author);
-
-    if (action === 'upsertVote') {
-      const trimmedName = String(name).trim();
-      const numericRating = Number(rating);
-
-      if (!trimmedName) {
-        return buildResponse(400, { ok: false, error: 'Name is required' });
-      }
-
-      if (!Number.isFinite(numericRating) || numericRating < 1 || numericRating > 10) {
-        return buildResponse(400, { ok: false, error: 'Rating must be between 1 and 10' });
-      }
-
-      const existingIndex = state.currentVotes.findIndex(
-        vote => String(vote.name).trim().toLowerCase() === trimmedName.toLowerCase()
-      );
-
-      const nextVote = {
-        id: existingIndex >= 0 ? state.currentVotes[existingIndex].id : Date.now(),
-        name: trimmedName,
-        rating: numericRating
-      };
-
-      if (existingIndex >= 0) {
-        state.currentVotes[existingIndex] = nextVote;
-      } else {
-        state.currentVotes.push(nextVote);
-      }
-    } else if (action === 'deleteVote') {
-      state.currentVotes = state.currentVotes.filter(vote => String(vote.id) !== String(id));
-    } else if (action !== 'syncBook') {
-      return buildResponse(400, { ok: false, error: 'Unknown action' });
+    let state = syncBookState(current.data, bookKey, title, author);
+    try {
+      state = applyVoteAction(state, action, { bookKey, name, rating, id });
+    } catch (error) {
+      return buildResponse(400, { ok: false, error: error.message });
     }
 
-    await saveWithRetry(state, current.sha, `Update ratings for ${title || bookKey}`);
+    const savedState = await saveWithRetry(
+      state,
+      current.sha,
+      `Update ratings for ${title || bookKey}`,
+      latestData => applyVoteAction(
+        syncBookState(latestData, bookKey, title, author),
+        action,
+        { bookKey, name, rating, id }
+      )
+    );
 
     return buildResponse(200, {
       ok: true,
       storage: 'shared',
-      ...state
+      ...savedState
     });
   } catch (error) {
     return buildResponse(500, {
